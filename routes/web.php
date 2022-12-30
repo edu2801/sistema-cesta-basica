@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CostumersController;
 use App\Http\Controllers\DashboardController;
 
 Route::prefix('login')->group(function () {
@@ -21,7 +22,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/insert', [UsersController::class, 'insert']);
         Route::get('/edit/{id}', [UsersController::class, 'edit']);
         Route::post('/update/{id}', [UsersController::class, 'update']);
-        // ainda é necessário fazer controller
+        // ainda é necessário fazer esse método
         Route::get('/delete/{id}', [UsersController::class, 'delete']);
+    });
+
+    Route::prefix('/costumers')->group(function () {
+        Route::get('/new-record/{id}', [CostumersController::class, 'newRecord']);
+        Route::post('/insert-record/{id}', [CostumersController::class, 'insertRecord']);
+        Route::get('/create', [CostumersController::class, 'create']);
+        // ainda é necessário fazer esse método
+        Route::post('/insert', [CostumersController::class, 'insert']);
+
     });
 });

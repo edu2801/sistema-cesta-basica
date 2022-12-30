@@ -23,6 +23,9 @@ Vue.component('p-users-index', require('./pages/users/index.vue').default);
 Vue.component('p-users-create', require('./pages/users/create.vue').default);
 Vue.component('p-users-edit', require('./pages/users/edit.vue').default);
 
+Vue.component('p-costumers-create', require('./pages/costumers/create.vue').default);
+Vue.component('p-costumers-new-record', require('./pages/costumers/new-record.vue').default);
+
 const app = new Vue({
     el: '#app',
     vuetify: new Vuetify({})

@@ -1,6 +1,18 @@
 <template>
     <div class="container">
         <navbarVue />
+        <div class="mx-5 d-flex justify-content-between align-items-center">
+            <h1 class="page-title">Dashboard</h1>
+            <a
+                href="/costumers/create"
+                class="d-block btn btn-primary btn-icon text-white me-2"
+            >
+                <span>
+                    <i class="fe fe-plus"></i>
+                </span>
+                Cadastrar beneficiário
+            </a>
+        </div>
         <v-app>
             <v-data-table :headers="columns" :items="dataTable">
                 <template v-slot:item.birth_date="{ item }">
@@ -22,7 +34,7 @@
                     </td>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <td class="text-center" style="font-size: 22px;">
+                    <td class="text-center" style="font-size: 22px">
                         <a
                             :href="'/costumers/new-record/' + item.id"
                             class="icons-table my-auto text-success me-1"
@@ -31,11 +43,11 @@
                             <i class="fa fa-plus"></i>
                         </a>
                         <a
-                            :href="'/costumers/edit/' + item.id"
+                            :href="'/costumers/' + item.id"
                             class="icons-table my-auto text-primary me-1"
-                            title="Editar"
+                            title="Detalhes"
                         >
-                            <i class=" fa fa-pencil"></i>
+                            <i class="fa fa-list-alt"></i>
                         </a>
                     </td>
                 </template>
@@ -54,7 +66,7 @@ export default {
     },
     props: {
         data: {
-            type: Array,
+            type: String,
             default: () => ({}),
         },
     },
