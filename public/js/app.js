@@ -5477,13 +5477,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'index',
+  name: "index",
   components: {
     navbarVue: _components_navbar_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   props: {
     data: {
-      type: Object,
+      type: Array,
       "default": function _default() {
         return {};
       }
@@ -5493,25 +5493,29 @@ __webpack_require__.r(__webpack_exports__);
     return {
       dataTable: JSON.parse(this.data),
       columns: [{
-        text: 'Nº',
-        value: 'id',
-        align: 'center'
+        text: "Nº",
+        value: "id",
+        align: "center"
       }, {
-        text: 'Nome',
-        value: 'name',
-        align: 'center'
+        text: "Nome",
+        value: "name",
+        align: "center"
       }, {
-        text: 'CPF',
-        value: 'cpf',
-        align: 'center'
+        text: "CPF",
+        value: "cpf",
+        align: "center"
       }, {
-        text: 'Nascimento',
-        value: 'birthday',
-        align: 'center'
+        text: "Nascimento",
+        value: "birth_date",
+        align: "center"
       }, {
-        text: 'Telefone',
-        value: 'phone',
-        align: 'center'
+        text: "Telefone",
+        value: "phone",
+        align: "center"
+      }, {
+        text: "Última retirada",
+        value: "last_redeem",
+        align: "center"
       }]
     };
   }
@@ -5958,7 +5962,16 @@ var render = function render() {
     attrs: {
       headers: _vm.columns,
       items: _vm.dataTable
-    }
+    },
+    scopedSlots: _vm._u([{
+      key: "item.birth_date",
+      fn: function fn(_ref) {
+        var item = _ref.item;
+        return [_c("td", {
+          staticClass: "text-center"
+        }, [_vm._v("\n                    " + _vm._s(new Date(item.birth_date).toLocaleDateString("pt-br")) + "\n                ")])];
+      }
+    }])
   })], 1)], 1);
 };
 var staticRenderFns = [];

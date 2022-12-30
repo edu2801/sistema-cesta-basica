@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/insert', [UsersController::class, 'insert']);
         Route::get('/edit/{id}', [UsersController::class, 'edit']);
         Route::post('/update/{id}', [UsersController::class, 'update']);
+        // ainda é necessário fazer controller
         Route::get('/delete/{id}', [UsersController::class, 'delete']);
     });
 });
