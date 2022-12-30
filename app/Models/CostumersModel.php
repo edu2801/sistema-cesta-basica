@@ -27,6 +27,7 @@ class CostumersModel extends Model
         'renda_cidada',
         'cesta_basica',
         'family_income',
+        'last_redeem',
         'created_at',
         'updated_at',
     ];
@@ -39,6 +40,7 @@ class CostumersModel extends Model
             'costumers.cpf',
             'costumers.birth_date',
             'costumers.phone',
+            'costumers.last_redeem',
         )->get();
     }
 }

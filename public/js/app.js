@@ -5516,6 +5516,10 @@ __webpack_require__.r(__webpack_exports__);
         text: "Última retirada",
         value: "last_redeem",
         align: "center"
+      }, {
+        text: "Ações",
+        value: "actions",
+        align: "center"
       }]
     };
   }
@@ -5970,6 +5974,41 @@ var render = function render() {
         return [_c("td", {
           staticClass: "text-center"
         }, [_vm._v("\n                    " + _vm._s(new Date(item.birth_date).toLocaleDateString("pt-br")) + "\n                ")])];
+      }
+    }, {
+      key: "item.last_redeem",
+      fn: function fn(_ref2) {
+        var item = _ref2.item;
+        return [_c("td", {
+          staticClass: "text-center"
+        }, [_vm._v("\n                    " + _vm._s(new Date(item.last_redeem).toLocaleDateString("pt-br")) + "\n                ")])];
+      }
+    }, {
+      key: "item.actions",
+      fn: function fn(_ref3) {
+        var item = _ref3.item;
+        return [_c("td", {
+          staticClass: "text-center",
+          staticStyle: {
+            "font-size": "22px"
+          }
+        }, [_c("a", {
+          staticClass: "icons-table my-auto text-success me-1",
+          attrs: {
+            href: "/costumers/new-record/" + item.id,
+            title: "Nova retirada"
+          }
+        }, [_c("i", {
+          staticClass: "fa fa-plus"
+        })]), _vm._v(" "), _c("a", {
+          staticClass: "icons-table my-auto text-primary me-1",
+          attrs: {
+            href: "/costumers/edit/" + item.id,
+            title: "Editar"
+          }
+        }, [_c("i", {
+          staticClass: "fa fa-pencil"
+        })])])];
       }
     }])
   })], 1)], 1);
