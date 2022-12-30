@@ -16,7 +16,10 @@ Vue.use(Loading);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 Vue.component('p-login', require('./login.vue').default);
+
 Vue.component('p-users-index', require('./pages/users/index.vue').default);
+Vue.component('p-users-create', require('./pages/users/create.vue').default);
+Vue.component('p-users-edit', require('./pages/users/edit.vue').default);
 
 const app = new Vue({
     el: '#app',

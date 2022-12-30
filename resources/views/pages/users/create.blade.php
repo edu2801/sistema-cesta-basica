@@ -12,7 +12,7 @@
 </head>
 <body>
     <div id="app">
-        <p-users-index data="{{ json_encode($dataTable) }}" ></p-users-index>
+        <p-users-create ></p-users-create>
     </div>
 </body>
 <script src="{{ mix('js/app.js') }}"></script>

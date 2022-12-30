@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -41,4 +42,41 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public static function createUser($data)
+    {
+        $data['password'] = Hash::make($data['password']);
+        $createdUser = self::create($data);
+
+        if (!$createdUser) {
+            return false;
+        }
+
+        return $createdUser;
+    }
+
+    public static function getUser($userId)
+    {
+        $query = User::where('id', $userId)->first()->toArray();
+        unset($query['password']);
+        unset($query['remember_token']);
+        unset($query['created_at']);
+        unset($query['updated_at']);
+
+        return $query;
+    }
+
+    public static function updateUserById($id, $data): bool
+    {
+        $updatedUser = self::where([
+            ['id', $id]
+        ])->update($data);
+
+        if (!$updatedUser) {
+            return false;
+        }
+
+        return true;
+    }
 }

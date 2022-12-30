@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <navbarVue></navbarVue>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -15,9 +16,13 @@
 </template>
 
 <script>
+import navbarVue from './navbar.vue';
     export default {
         mounted() {
             console.log('Component mounted.')
+        },
+        components: {
+            navbarVue
         }
     }
 </script>
