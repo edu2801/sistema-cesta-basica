@@ -30,4 +30,10 @@ class LoginController extends Controller
 
         return Response::error([], 'Essas credenciais não correspondem.');
     }
+
+    public static function logout()
+    {
+        Auth::logout();
+        return redirect()->route('login');
+    }
 }

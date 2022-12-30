@@ -5911,7 +5911,14 @@ var staticRenderFns = [function () {
     attrs: {
       href: "/users"
     }
-  }, [_vm._v("Usuários")])])])])])])]);
+  }, [_vm._v("Usuários")])]), _vm._v(" "), _c("li", {
+    staticClass: "nav-item"
+  }, [_c("a", {
+    staticClass: "nav-link",
+    attrs: {
+      href: "/logout"
+    }
+  }, [_vm._v("Sair")])])])])])])]);
 }];
 render._withStripped = true;
 

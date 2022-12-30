@@ -34,4 +34,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/insert', [CostumersController::class, 'insert']);
 
     });
+
+    Route::get('/logout', [LoginController::class, 'logout']);
 });

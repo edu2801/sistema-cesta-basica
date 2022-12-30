@@ -27,6 +27,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/users">Usuários</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Sair</a>
+                        </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="#">Pricing</a>
                         </li> -->
