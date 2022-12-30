@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\DashboardController;
 
 Route::prefix('login')->group(function () {
     Route::get('/', function () {
@@ -12,9 +13,7 @@ Route::prefix('login')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('/users')->group(function () {
         Route::get('/', [UsersController::class, 'index']);
