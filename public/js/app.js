@@ -5475,17 +5475,82 @@ __webpack_require__.r(__webpack_exports__);
   name: "CreateCostumer",
   data: function data() {
     return {
-      errors: {
+      costumer: {
         name: "",
-        email: "",
-        password: "",
-        password_confirmation: ""
-      }
+        phone: "",
+        birth_date: "",
+        marital_status: "",
+        rg: "",
+        cpf: "",
+        schooling: "",
+        occupation: "",
+        salary: "",
+        family_income: "",
+        cadastro_unico: false,
+        bolsa_familia: false,
+        prestacao_continuada: false,
+        renda_cidada: false,
+        cesta_basica: false
+      },
+      address: {
+        street: "",
+        neighborhood: "",
+        number: "",
+        city: "",
+        state: "SP",
+        cep: "-",
+        complement: "-",
+        reference: ""
+      },
+      relatives: [{
+        name: "",
+        relationship: "",
+        age: "",
+        occupation: "",
+        salary: ""
+      }],
+      healthSituation: {
+        chronicDiseases: "",
+        vices: ""
+      },
+      habitation: {
+        ownership: "",
+        value: null,
+        condition: ""
+      },
+      observations: {
+        observation: ""
+      },
+      menu2: false
     };
   },
   methods: {
+    createCostumer: function createCostumer() {
+      var body = {
+        costumer: this.costumer,
+        address: this.address,
+        relatives: this.relatives,
+        healthSituation: this.healthSituation,
+        habitation: this.habitation,
+        observations: this.observations
+      };
+      axios.post("/costumers/insert", body).then(function (response) {
+        window.location.href = "/";
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     home: function home() {
-      window.location.href = '/';
+      window.location.href = "/";
+    },
+    addRelative: function addRelative() {
+      this.relatives.push({
+        name: "",
+        relationship: "",
+        age: "",
+        occupation: "",
+        salary: ""
+      });
     }
   }
 });
@@ -5529,6 +5594,52 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/costumers/view.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/costumers/view.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "viewCosumer",
+  props: {
+    data: String
+  },
+  data: function data() {
+    return {
+      costumer: {},
+      address: {},
+      relatives: {},
+      healthSituation: {},
+      habitation: {},
+      observations: {},
+      menu2: false
+    };
+  },
+  methods: {
+    home: function home() {
+      window.location.href = "/";
+    }
+  },
+  mounted: function mounted() {
+    var personsData = JSON.parse(this.data);
+    this.costumer = personsData.costumer;
+    this.address = personsData.address;
+    this.relatives = personsData.familyGroup;
+    this.healthSituation = personsData.healthSituation;
+    this.habitation = personsData.habitation;
+    this.observations = personsData.observations;
+    console.log(personsData);
   }
 });
 
@@ -5877,7 +5988,15 @@ var staticRenderFns = [function () {
     attrs: {
       href: "/"
     }
-  }, [_vm._v("Navbar")]), _vm._v(" "), _c("button", {
+  }, [_c("img", {
+    staticClass: "d-inline-block align-text-top",
+    attrs: {
+      src: "/assets/images/logo.jpg",
+      alt: "",
+      width: "100",
+      height: "50"
+    }
+  })]), _vm._v(" "), _c("button", {
     staticClass: "navbar-toggler",
     attrs: {
       type: "button",
@@ -5905,13 +6024,6 @@ var staticRenderFns = [function () {
       href: "/"
     }
   }, [_vm._v("Início")])]), _vm._v(" "), _c("li", {
-    staticClass: "nav-item"
-  }, [_c("a", {
-    staticClass: "nav-link",
-    attrs: {
-      href: "/users"
-    }
-  }, [_vm._v("Usuários")])]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
     staticClass: "nav-link",
@@ -6041,137 +6153,1279 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", {
+  return _c("v-app", {
+    staticClass: "container"
+  }, [_c("div", {
     staticClass: "col-12"
   }, [_c("div", {
     staticClass: "card"
   }, [_c("div", {
     staticClass: "card-header"
-  }, [_vm._v("Dados do usuário")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Dados do básicos")]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "row"
   }, [_c("div", {
-    staticClass: "col-12 col-lg-6 mb-3"
+    staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
   }, [_vm._v("Nome")]), _vm._v(" "), _c("div", {
     staticClass: "wrap-input100"
   }, [_c("input", {
-    "class": "input100 form-control " + _vm.errors.name,
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.name,
+      expression: "costumer.name"
+    }],
+    "class": "input100 form-control ",
     attrs: {
       name: "name",
       placeholder: "Nome",
       type: "text"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12 col-lg-6 mb-3"
-  }, [_c("label", {
-    staticClass: "form-label"
-  }, [_vm._v("E-mail")]), _vm._v(" "), _c("div", {
-    staticClass: "wrap-input100"
-  }, [_c("input", {
-    "class": "input100 form-control " + _vm.errors.email,
-    attrs: {
-      name: "email",
-      placeholder: "E-mail",
-      type: "text"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _vm._m(1)])])]), _vm._v(" "), _c("div", {
-    staticClass: "row"
-  }, [_c("div", {
-    staticClass: "col-12 col-lg-6 mb-3"
-  }, [_c("label", {
-    staticClass: "form-label"
-  }, [_vm._v("Senha")]), _vm._v(" "), _c("div", {
-    staticClass: "wrap-input100"
-  }, [_c("input", {
-    "class": "input100 form-control " + _vm.errors.password_confirmation,
-    attrs: {
-      name: "password",
-      placeholder: "Senha",
-      type: "password"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _vm._m(2)])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12 col-lg-6 mb-3"
-  }, [_c("label", {
-    staticClass: "form-label"
-  }, [_vm._v("Confirmação de senha")]), _vm._v(" "), _c("div", {
-    staticClass: "wrap-input100"
-  }, [_c("input", {
-    "class": "input100 form-control " + _vm.errors.password_confirmation,
-    attrs: {
-      name: "password_confirmation",
-      placeholder: "Confirmação de senha",
-      type: "password"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _vm._m(3)])])]), _vm._v(" "), _c("div", {
-    staticClass: "mt-3 d-flex align-items-center justify-content-between mx-10"
-  }, [_c("button", {
-    staticClass: "btn btn-danger",
+    },
+    domProps: {
+      value: _vm.costumer.name
+    },
     on: {
-      click: _vm.home
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "name", $event.target.value);
+      }
     }
-  }, [_vm._v("\n                    Cancelar\n                ")]), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-primary",
-    on: {
-      click: _vm.createCostumer
-    }
-  }, [_vm._v("\n                    Inserir usuário\n                ")])])])])]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("span", {
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
   }, [_c("i", {
     staticClass: "mdi mdi-account",
     attrs: {
       "aria-hidden": "true"
     }
-  })]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("span", {
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Telefone")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.phone,
+      expression: "costumer.phone"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "phone",
+      placeholder: "Telefone",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.phone
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "phone", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
   }, [_c("i", {
     staticClass: "zmdi zmdi-email",
     attrs: {
       "aria-hidden": "true"
     }
-  })]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("span", {
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Data de nascimento")]), _vm._v(" "), _c("v-menu", {
+    attrs: {
+      "close-on-content-click": false,
+      transition: "scale-transition",
+      "max-width": "290"
+    },
+    scopedSlots: _vm._u([{
+      key: "activator",
+      fn: function fn(_ref) {
+        var on = _ref.on,
+          attrs = _ref.attrs;
+        return [_c("v-text-field", _vm._g(_vm._b({
+          staticClass: "pt-0",
+          attrs: {
+            readonly: ""
+          },
+          model: {
+            value: _vm.costumer.birth_date.split("-").reverse().join("/"),
+            callback: function callback($$v) {
+              _vm.$set(_vm.costumer.birth_date.split("-").reverse(), "join('/')", $$v);
+            },
+            expression: "\n                                    costumer.birth_date\n                                        .split('-')\n                                        .reverse()\n                                        .join('/')\n                                "
+          }
+        }, "v-text-field", attrs, false), on))];
+      }
+    }]),
+    model: {
+      value: _vm.menu2,
+      callback: function callback($$v) {
+        _vm.menu2 = $$v;
+      },
+      expression: "menu2"
+    }
+  }, [_vm._v(" "), _c("v-date-picker", {
+    attrs: {
+      "no-title": ""
+    },
+    on: {
+      input: function input($event) {
+        _vm.menu2 = false;
+      }
+    },
+    model: {
+      value: _vm.costumer.birth_date,
+      callback: function callback($$v) {
+        _vm.$set(_vm.costumer, "birth_date", $$v);
+      },
+      expression: "costumer.birth_date"
+    }
+  })], 1)], 1), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Estado civil")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.marital_status,
+      expression: "costumer.marital_status"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "marital_status",
+      placeholder: "Estado Civil",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.marital_status
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "marital_status", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
   }, [_c("i", {
     staticClass: "zmdi zmdi-lock",
     attrs: {
       "aria-hidden": "true"
     }
-  })]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("span", {
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("RG")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.rg,
+      expression: "costumer.rg"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "rg",
+      placeholder: "RG",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.rg
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "rg", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
   }, [_c("i", {
-    staticClass: "zmdi zmdi-lock",
+    staticClass: "mdi mdi-account",
     attrs: {
       "aria-hidden": "true"
     }
-  })]);
-}];
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("CPF")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.cpf,
+      expression: "costumer.cpf"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "cpf",
+      placeholder: "CPF",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.cpf
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "cpf", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Escolaridade")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.schooling,
+      expression: "costumer.schooling"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "schooling",
+      placeholder: "Escolaridade",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.schooling
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "schooling", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Profissão")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.occupation,
+      expression: "costumer.occupation"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "occupation",
+      placeholder: "Profissão",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.occupation
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "occupation", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Salário")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.salary,
+      expression: "costumer.salary"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "salary",
+      placeholder: "Salário",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.costumer.salary
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "salary", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Renda familiar")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.family_income,
+      expression: "costumer.family_income"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "family_income",
+      placeholder: "Renda Familiar",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.costumer.family_income
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "family_income", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Endereço")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Rua")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.street,
+      expression: "address.street"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "street",
+      placeholder: "Rua",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.street
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "street", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Número")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.number,
+      expression: "address.number"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "number",
+      placeholder: "Número",
+      type: "string"
+    },
+    domProps: {
+      value: _vm.address.number
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "number", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Bairro")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.neighborhood,
+      expression: "address.neighborhood"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "neighborhood",
+      placeholder: "Bairro",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.neighborhood
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "neighborhood", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Cidade")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.city,
+      expression: "address.city"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "city",
+      placeholder: "Cidade",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.city
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "city", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-12 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Referência")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.reference,
+      expression: "address.reference"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "reference",
+      placeholder: "Referência",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.reference
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "reference", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Grupo familiar")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_vm._l(_vm.relatives, function (relative) {
+    return _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-12 col-md-4 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Nome")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.name,
+        expression: "relative.name"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_name",
+        placeholder: "Nome",
+        type: "text"
+      },
+      domProps: {
+        value: relative.name
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "name", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Parentesco")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.relationship,
+        expression: "relative.relationship"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_relationship",
+        placeholder: "Parentesco",
+        type: "text"
+      },
+      domProps: {
+        value: relative.relationship
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "relationship", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Idade")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.age,
+        expression: "relative.age"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_age",
+        placeholder: "Idade",
+        type: "text"
+      },
+      domProps: {
+        value: relative.age
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "age", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Profissão")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.occupation,
+        expression: "relative.occupation"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "occupation",
+        placeholder: "Profissão",
+        type: "text"
+      },
+      domProps: {
+        value: relative.occupation
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "occupation", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Salário")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.salary,
+        expression: "relative.salary"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_salary",
+        placeholder: "Salário",
+        type: "text"
+      },
+      domProps: {
+        value: relative.salary
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "salary", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])])]);
+  }), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 text-center"
+  }, [_c("a", {
+    staticClass: "text-primary",
+    on: {
+      click: _vm.addRelative
+    }
+  }, [_vm._v("Adicionar mais parentes")])])])], 2)]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("\n                Benefícios de transferência de renda\n            ")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.cadastro_unico,
+      expression: "costumer.cadastro_unico"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkCadastroUnico"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.cadastro_unico) ? _vm._i(_vm.costumer.cadastro_unico, null) > -1 : _vm.costumer.cadastro_unico
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.cadastro_unico,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "cadastro_unico", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "cadastro_unico", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "cadastro_unico", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkCadastroUnico"
+    }
+  }, [_vm._v("Cadastro Único")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.bolsa_familia,
+      expression: "costumer.bolsa_familia"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkBolsaFamilia"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.bolsa_familia) ? _vm._i(_vm.costumer.bolsa_familia, null) > -1 : _vm.costumer.bolsa_familia
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.bolsa_familia,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "bolsa_familia", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "bolsa_familia", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "bolsa_familia", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkBolsaFamilia"
+    }
+  }, [_vm._v("Bolsa Família")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.prestacao_continuada,
+      expression: "costumer.prestacao_continuada"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkPrestacaoContinuada"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.prestacao_continuada) ? _vm._i(_vm.costumer.prestacao_continuada, null) > -1 : _vm.costumer.prestacao_continuada
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.prestacao_continuada,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "prestacao_continuada", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "prestacao_continuada", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "prestacao_continuada", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkPrestacaoContinuada"
+    }
+  }, [_vm._v("Prestação Continuada")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.renda_cidada,
+      expression: "costumer.renda_cidada"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkRendaCidada"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.renda_cidada) ? _vm._i(_vm.costumer.renda_cidada, null) > -1 : _vm.costumer.renda_cidada
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.renda_cidada,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "renda_cidada", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "renda_cidada", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "renda_cidada", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkRendaCidada"
+    }
+  }, [_vm._v("Renda Cidadã")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.cesta_basica,
+      expression: "costumer.cesta_basica"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkCestaBasica"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.cesta_basica) ? _vm._i(_vm.costumer.cesta_basica, null) > -1 : _vm.costumer.cesta_basica
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.cesta_basica,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "cesta_basica", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "cesta_basica", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "cesta_basica", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkCestaBasica"
+    }
+  }, [_vm._v("Cesta Básica")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Situação de saúde")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-4 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Doenças crônicas")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.healthSituation.chronicDiseases,
+      expression: "healthSituation.chronicDiseases"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "chronicDiseases",
+      placeholder: "Doenças Crônicas",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.healthSituation.chronicDiseases
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.healthSituation, "chronicDiseases", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-4 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Vícios")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.healthSituation.vices,
+      expression: "healthSituation.vices"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "vices",
+      placeholder: "Vícios",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.healthSituation.vices
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.healthSituation, "vices", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Habitação")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.ownership,
+      expression: "habitation.ownership"
+    }],
+    attrs: {
+      type: "radio",
+      id: "radioRented",
+      value: "rented"
+    },
+    domProps: {
+      checked: _vm._q(_vm.habitation.ownership, "rented")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.habitation, "ownership", "rented");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "radioRented"
+    }
+  }, [_vm._v("Alugada")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.ownership,
+      expression: "habitation.ownership"
+    }],
+    attrs: {
+      type: "radio",
+      id: "radioOwned",
+      value: "owned"
+    },
+    domProps: {
+      checked: _vm._q(_vm.habitation.ownership, "owned")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.habitation, "ownership", "owned");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "radioOwned"
+    }
+  }, [_vm._v("Própria")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.ownership,
+      expression: "habitation.ownership"
+    }],
+    attrs: {
+      type: "radio",
+      id: "radioGived",
+      value: "gived"
+    },
+    domProps: {
+      checked: _vm._q(_vm.habitation.ownership, "gived")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.habitation, "ownership", "gived");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "radioGived"
+    }
+  }, [_vm._v("Cedida")])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col md-6"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "habitationCondition"
+    }
+  }, [_vm._v("Condição")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.condition,
+      expression: "habitation.condition"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      type: "text",
+      id: "habitationCondition",
+      name: "habitationCondition",
+      placeholder: "Condição"
+    },
+    domProps: {
+      value: _vm.habitation.condition
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.habitation, "condition", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _vm.habitation.ownership === "rented" ? _c("div", {
+    staticClass: "col-12 col-md-6"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.value,
+      expression: "habitation.value"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "value",
+      placeholder: "Valor do aluguel",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.habitation.value
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.habitation, "value", $event.target.value);
+      }
+    }
+  })]) : _vm._e()])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Observações adicionais")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.observations.observation,
+      expression: "observations.observation"
+    }],
+    "class": "form-control",
+    attrs: {
+      placeholder: "Digite as observações aqui...",
+      rows: "4"
+    },
+    domProps: {
+      value: _vm.observations.observation
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.observations, "observation", $event.target.value);
+      }
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "mt-5 pb-5 d-flex align-items-center justify-content-between mx-10"
+  }, [_c("button", {
+    staticClass: "btn btn-danger",
+    on: {
+      click: _vm.home
+    }
+  }, [_vm._v("Cancelar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-primary",
+    on: {
+      click: _vm.createCostumer
+    }
+  }, [_vm._v("\n                Inserir usuário\n            ")])])])]);
+};
+var staticRenderFns = [];
 render._withStripped = true;
 
 
@@ -6194,7 +7448,7 @@ var render = function render() {
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "container"
-  }, [_c("h1", [_vm._v("Confirmação")]), _vm._v(" "), _c("div", [_vm._v("\n        Eu, "), _c("strong", [_vm._v(_vm._s(_vm.adminData.name))]), _vm._v(", confirmo que o(a) sr(a)\n        "), _c("strong", [_vm._v(_vm._s(_vm.costumerData.name))]), _vm._v(" está retirando a Cesta\n        Básica hoje\n        " + _vm._s(new Date().toLocaleDateString("pt-br")) + "\n    ")]), _vm._v(" "), _c("div", [_c("a", {
+  }, [_c("h1", [_vm._v("Confirmação")]), _vm._v(" "), _c("div", [_vm._v("\n        Eu confirmo que o(a) sr(a)\n        "), _c("strong", [_vm._v(_vm._s(_vm.costumerData.name))]), _vm._v(" está retirando a Cesta\n        Básica hoje\n        " + _vm._s(new Date().toLocaleDateString("pt-br")) + "\n    ")]), _vm._v(" "), _c("div", [_c("a", {
     staticClass: "btn btn-secondary",
     attrs: {
       href: "/"
@@ -6205,6 +7459,1278 @@ var render = function render() {
       click: _vm.confirm
     }
   }, [_vm._v("Confirmar")])])]);
+};
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/costumers/view.vue?vue&type=template&id=2f5faffc&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/costumers/view.vue?vue&type=template&id=2f5faffc& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("v-app", {
+    staticClass: "container"
+  }, [_c("div", {
+    staticClass: "col-12"
+  }, [_c("div", {
+    staticClass: "card"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Dados do básicos")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Nome")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.name,
+      expression: "costumer.name"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "name",
+      placeholder: "Nome",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.name
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "name", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Telefone")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.phone,
+      expression: "costumer.phone"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "phone",
+      placeholder: "Telefone",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.phone
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "phone", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Data de nascimento")]), _vm._v(" "), _c("v-menu", {
+    attrs: {
+      "close-on-content-click": false,
+      transition: "scale-transition",
+      "max-width": "290"
+    },
+    scopedSlots: _vm._u([{
+      key: "activator",
+      fn: function fn(_ref) {
+        var on = _ref.on,
+          attrs = _ref.attrs;
+        return [_c("v-text-field", _vm._g(_vm._b({
+          staticClass: "pt-0",
+          attrs: {
+            readonly: ""
+          },
+          model: {
+            value: _vm.costumer.birth_date.split("-").reverse().join("/"),
+            callback: function callback($$v) {
+              _vm.$set(_vm.costumer.birth_date.split("-").reverse(), "join('/')", $$v);
+            },
+            expression: "\n                                    costumer.birth_date\n                                        .split('-')\n                                        .reverse()\n                                        .join('/')\n                                "
+          }
+        }, "v-text-field", attrs, false), on))];
+      }
+    }]),
+    model: {
+      value: _vm.menu2,
+      callback: function callback($$v) {
+        _vm.menu2 = $$v;
+      },
+      expression: "menu2"
+    }
+  }, [_vm._v(" "), _c("v-date-picker", {
+    attrs: {
+      "no-title": ""
+    },
+    on: {
+      input: function input($event) {
+        _vm.menu2 = false;
+      }
+    },
+    model: {
+      value: _vm.costumer.birth_date,
+      callback: function callback($$v) {
+        _vm.$set(_vm.costumer, "birth_date", $$v);
+      },
+      expression: "costumer.birth_date"
+    }
+  })], 1)], 1), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Estado civil")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.marital_status,
+      expression: "costumer.marital_status"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "marital_status",
+      placeholder: "Estado Civil",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.marital_status
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "marital_status", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-lock",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("RG")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.rg,
+      expression: "costumer.rg"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "rg",
+      placeholder: "RG",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.rg
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "rg", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("CPF")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.cpf,
+      expression: "costumer.cpf"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "cpf",
+      placeholder: "CPF",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.cpf
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "cpf", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Escolaridade")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.schooling,
+      expression: "costumer.schooling"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "schooling",
+      placeholder: "Escolaridade",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.schooling
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "schooling", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Profissão")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.occupation,
+      expression: "costumer.occupation"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "occupation",
+      placeholder: "Profissão",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.costumer.occupation
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "occupation", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Salário")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.salary,
+      expression: "costumer.salary"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "salary",
+      placeholder: "Salário",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.costumer.salary
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "salary", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Renda familiar")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.family_income,
+      expression: "costumer.family_income"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "family_income",
+      placeholder: "Renda Familiar",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.costumer.family_income
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.costumer, "family_income", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Endereço")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Rua")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.street,
+      expression: "address.street"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "street",
+      placeholder: "Rua",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.street
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "street", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Número")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.number,
+      expression: "address.number"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "number",
+      placeholder: "Número",
+      type: "string"
+    },
+    domProps: {
+      value: _vm.address.number
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "number", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Bairro")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.neighborhood,
+      expression: "address.neighborhood"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "neighborhood",
+      placeholder: "Bairro",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.neighborhood
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "neighborhood", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Cidade")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.city,
+      expression: "address.city"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "city",
+      placeholder: "Cidade",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.city
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "city", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-12 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Referência")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.reference,
+      expression: "address.reference"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "reference",
+      placeholder: "Referência",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.reference
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "reference", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Grupo familiar")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, _vm._l(_vm.relatives, function (relative) {
+    return _c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "col-12 col-md-4 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Nome")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.name,
+        expression: "relative.name"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_name",
+        placeholder: "Nome",
+        type: "text"
+      },
+      domProps: {
+        value: relative.name
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "name", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Parentesco")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.relationship,
+        expression: "relative.relationship"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_relationship",
+        placeholder: "Parentesco",
+        type: "text"
+      },
+      domProps: {
+        value: relative.relationship
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "relationship", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Idade")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.age,
+        expression: "relative.age"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_age",
+        placeholder: "Idade",
+        type: "text"
+      },
+      domProps: {
+        value: relative.age
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "age", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Profissão")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.occupation,
+        expression: "relative.occupation"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "occupation",
+        placeholder: "Profissão",
+        type: "text"
+      },
+      domProps: {
+        value: relative.occupation
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "occupation", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Salário")]), _vm._v(" "), _c("div", {
+      staticClass: "wrap-input100"
+    }, [_c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: relative.salary,
+        expression: "relative.salary"
+      }],
+      "class": "input100 form-control ",
+      attrs: {
+        name: "relative_salary",
+        placeholder: "Salário",
+        type: "text"
+      },
+      domProps: {
+        value: relative.salary
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(relative, "salary", $event.target.value);
+        }
+      }
+    }), _vm._v(" "), _c("span", {
+      staticClass: "focus-input100"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "symbol-input100"
+    }, [_c("i", {
+      staticClass: "zmdi zmdi-email",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])])]);
+  }), 0)]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("\n                Benefícios de transferência de renda\n            ")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.cadastro_unico,
+      expression: "costumer.cadastro_unico"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkCadastroUnico"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.cadastro_unico) ? _vm._i(_vm.costumer.cadastro_unico, null) > -1 : _vm.costumer.cadastro_unico
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.cadastro_unico,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "cadastro_unico", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "cadastro_unico", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "cadastro_unico", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkCadastroUnico"
+    }
+  }, [_vm._v("Cadastro Único")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.bolsa_familia,
+      expression: "costumer.bolsa_familia"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkBolsaFamilia"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.bolsa_familia) ? _vm._i(_vm.costumer.bolsa_familia, null) > -1 : _vm.costumer.bolsa_familia
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.bolsa_familia,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "bolsa_familia", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "bolsa_familia", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "bolsa_familia", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkBolsaFamilia"
+    }
+  }, [_vm._v("Bolsa Família")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.prestacao_continuada,
+      expression: "costumer.prestacao_continuada"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkPrestacaoContinuada"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.prestacao_continuada) ? _vm._i(_vm.costumer.prestacao_continuada, null) > -1 : _vm.costumer.prestacao_continuada
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.prestacao_continuada,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "prestacao_continuada", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "prestacao_continuada", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "prestacao_continuada", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkPrestacaoContinuada"
+    }
+  }, [_vm._v("Prestação Continuada")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.renda_cidada,
+      expression: "costumer.renda_cidada"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkRendaCidada"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.renda_cidada) ? _vm._i(_vm.costumer.renda_cidada, null) > -1 : _vm.costumer.renda_cidada
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.renda_cidada,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "renda_cidada", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "renda_cidada", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "renda_cidada", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkRendaCidada"
+    }
+  }, [_vm._v("Renda Cidadã")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.cesta_basica,
+      expression: "costumer.cesta_basica"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkCestaBasica"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.cesta_basica) ? _vm._i(_vm.costumer.cesta_basica, null) > -1 : _vm.costumer.cesta_basica
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.cesta_basica,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "cesta_basica", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "cesta_basica", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "cesta_basica", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkCestaBasica"
+    }
+  }, [_vm._v("Cesta Básica")])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Situação de saúde")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-4 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Doenças crônicas")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.healthSituation.chronicDiseases,
+      expression: "healthSituation.chronicDiseases"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "chronicDiseases",
+      placeholder: "Doenças Crônicas",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.healthSituation.chronicDiseases
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.healthSituation, "chronicDiseases", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-4 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Vícios")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.healthSituation.vices,
+      expression: "healthSituation.vices"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "vices",
+      placeholder: "Vícios",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.healthSituation.vices
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.healthSituation, "vices", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Habitação")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.ownership,
+      expression: "habitation.ownership"
+    }],
+    attrs: {
+      type: "radio",
+      id: "radioRented",
+      value: "rented"
+    },
+    domProps: {
+      checked: _vm._q(_vm.habitation.ownership, "rented")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.habitation, "ownership", "rented");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "radioRented"
+    }
+  }, [_vm._v("Alugada")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.ownership,
+      expression: "habitation.ownership"
+    }],
+    attrs: {
+      type: "radio",
+      id: "radioOwned",
+      value: "owned"
+    },
+    domProps: {
+      checked: _vm._q(_vm.habitation.ownership, "owned")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.habitation, "ownership", "owned");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "radioOwned"
+    }
+  }, [_vm._v("Própria")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-2"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.ownership,
+      expression: "habitation.ownership"
+    }],
+    attrs: {
+      type: "radio",
+      id: "radioGived",
+      value: "gived"
+    },
+    domProps: {
+      checked: _vm._q(_vm.habitation.ownership, "gived")
+    },
+    on: {
+      change: function change($event) {
+        return _vm.$set(_vm.habitation, "ownership", "gived");
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "radioGived"
+    }
+  }, [_vm._v("Cedida")])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
+    staticClass: "col-12 col md-6"
+  }, [_c("label", {
+    staticClass: "form-label",
+    attrs: {
+      "for": "habitationCondition"
+    }
+  }, [_vm._v("Condição")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.conditions,
+      expression: "habitation.conditions"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      type: "text",
+      id: "habitationCondition",
+      name: "habitationCondition",
+      placeholder: "Condição"
+    },
+    domProps: {
+      value: _vm.habitation.conditions
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.habitation, "conditions", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _vm.habitation.ownership === "rented" ? _c("div", {
+    staticClass: "col-12 col-md-6"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.habitation.value,
+      expression: "habitation.value"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "value",
+      placeholder: "Valor do aluguel",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.habitation.value
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.habitation, "value", $event.target.value);
+      }
+    }
+  })]) : _vm._e()])])]), _vm._v(" "), _c("div", {
+    staticClass: "card mt-5"
+  }, [_c("div", {
+    staticClass: "card-header"
+  }, [_vm._v("Observações adicionais")]), _vm._v(" "), _c("div", {
+    staticClass: "card-body"
+  }, [_c("div", {
+    staticClass: "row"
+  }, [_c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.observations.observation,
+      expression: "observations.observation"
+    }],
+    "class": "form-control",
+    attrs: {
+      placeholder: "Digite as observações aqui...",
+      rows: "4"
+    },
+    domProps: {
+      value: _vm.observations.observation
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.observations, "observation", $event.target.value);
+      }
+    }
+  })])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -6237,18 +8763,20 @@ var render = function render() {
     scopedSlots: _vm._u([{
       key: "item.birth_date",
       fn: function fn(_ref) {
+        var _item$birth_date;
         var item = _ref.item;
         return [_c("td", {
           staticClass: "text-center"
-        }, [_vm._v("\n                    " + _vm._s(new Date(item.birth_date).toLocaleDateString("pt-br")) + "\n                ")])];
+        }, [_vm._v("\n                    " + _vm._s((_item$birth_date = item.birth_date) === null || _item$birth_date === void 0 ? void 0 : _item$birth_date.split("-").reverse().join("/")) + "\n                ")])];
       }
     }, {
       key: "item.last_redeem",
       fn: function fn(_ref2) {
+        var _item$last_redeem;
         var item = _ref2.item;
         return [_c("td", {
           staticClass: "text-center"
-        }, [_vm._v("\n                    " + _vm._s(new Date(item.last_redeem).toLocaleDateString("pt-br")) + "\n                ")])];
+        }, [_vm._v("\n                    " + _vm._s((_item$last_redeem = item.last_redeem) === null || _item$last_redeem === void 0 ? void 0 : _item$last_redeem.split("-").reverse().join("/")) + "\n                ")])];
       }
     }, {
       key: "item.actions",
@@ -6267,15 +8795,15 @@ var render = function render() {
           }
         }, [_c("i", {
           staticClass: "fa fa-plus"
-        })]), _vm._v(" "), _c("a", {
+        }, [_vm._v("re")])]), _vm._v(" "), _c("a", {
           staticClass: "icons-table my-auto text-primary me-1",
           attrs: {
-            href: "/costumers/" + item.id,
+            href: "/costumers/view/" + item.id,
             title: "Detalhes"
           }
         }, [_c("i", {
           staticClass: "fa fa-list-alt"
-        })])])];
+        }, [_vm._v("de")])])])];
       }
     }])
   })], 1)], 1);
@@ -6852,7 +9380,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-loading-overlay */ "./node_modules/vue-loading-overlay/dist/vue-loading.min.js");
 /* harmony import */ var vue_loading_overlay__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_loading_overlay__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var vue_loading_overlay_dist_vue_loading_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-loading-overlay/dist/vue-loading.css */ "./node_modules/vue-loading-overlay/dist/vue-loading.css");
+/* harmony import */ var vuetify_lib_locale_pt__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vuetify/lib/locale/pt */ "./node_modules/vuetify/lib/locale/pt.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
 
 
 
@@ -6869,11 +9399,19 @@ vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('p-dashboard-index', (__we
 vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('p-users-index', (__webpack_require__(/*! ./pages/users/index.vue */ "./resources/js/pages/users/index.vue")["default"]));
 vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('p-users-create', (__webpack_require__(/*! ./pages/users/create.vue */ "./resources/js/pages/users/create.vue")["default"]));
 vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('p-users-edit', (__webpack_require__(/*! ./pages/users/edit.vue */ "./resources/js/pages/users/edit.vue")["default"]));
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('p-costumers-view', (__webpack_require__(/*! ./pages/costumers/view.vue */ "./resources/js/pages/costumers/view.vue")["default"]));
 vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('p-costumers-create', (__webpack_require__(/*! ./pages/costumers/create.vue */ "./resources/js/pages/costumers/create.vue")["default"]));
 vue__WEBPACK_IMPORTED_MODULE_5__["default"].component('p-costumers-new-record', (__webpack_require__(/*! ./pages/costumers/new-record.vue */ "./resources/js/pages/costumers/new-record.vue")["default"]));
 var app = new vue__WEBPACK_IMPORTED_MODULE_5__["default"]({
   el: '#app',
-  vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_6___default())({})
+  vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_6___default())({
+    lang: {
+      locales: {
+        pt: vuetify_lib_locale_pt__WEBPACK_IMPORTED_MODULE_7__["default"]
+      },
+      current: 'pt'
+    }
+  })
 });
 
 /***/ }),
@@ -30278,6 +32816,45 @@ component.options.__file = "resources/js/pages/costumers/new-record.vue"
 
 /***/ }),
 
+/***/ "./resources/js/pages/costumers/view.vue":
+/*!***********************************************!*\
+  !*** ./resources/js/pages/costumers/view.vue ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _view_vue_vue_type_template_id_2f5faffc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./view.vue?vue&type=template&id=2f5faffc& */ "./resources/js/pages/costumers/view.vue?vue&type=template&id=2f5faffc&");
+/* harmony import */ var _view_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./view.vue?vue&type=script&lang=js& */ "./resources/js/pages/costumers/view.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _view_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _view_vue_vue_type_template_id_2f5faffc___WEBPACK_IMPORTED_MODULE_0__.render,
+  _view_vue_vue_type_template_id_2f5faffc___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/pages/costumers/view.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/pages/dashboard/index.vue":
 /*!************************************************!*\
   !*** ./resources/js/pages/dashboard/index.vue ***!
@@ -30514,6 +33091,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/pages/costumers/view.vue?vue&type=script&lang=js&":
+/*!************************************************************************!*\
+  !*** ./resources/js/pages/costumers/view.vue?vue&type=script&lang=js& ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_view_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./view.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/costumers/view.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_view_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/pages/dashboard/index.vue?vue&type=script&lang=js&":
 /*!*************************************************************************!*\
   !*** ./resources/js/pages/dashboard/index.vue?vue&type=script&lang=js& ***!
@@ -30659,6 +33252,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_new_record_vue_vue_type_template_id_a22b0296___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_new_record_vue_vue_type_template_id_a22b0296___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./new-record.vue?vue&type=template&id=a22b0296& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/costumers/new-record.vue?vue&type=template&id=a22b0296&");
+
+
+/***/ }),
+
+/***/ "./resources/js/pages/costumers/view.vue?vue&type=template&id=2f5faffc&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/pages/costumers/view.vue?vue&type=template&id=2f5faffc& ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_view_vue_vue_type_template_id_2f5faffc___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_view_vue_vue_type_template_id_2f5faffc___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_view_vue_vue_type_template_id_2f5faffc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./view.vue?vue&type=template&id=2f5faffc& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/pages/costumers/view.vue?vue&type=template&id=2f5faffc&");
 
 
 /***/ }),
@@ -89224,6 +91834,90 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 /******/ })["default"];
 });
 //# sourceMappingURL=vuetify.js.map
+
+/***/ }),
+
+/***/ "./node_modules/vuetify/lib/locale/pt.js":
+/*!***********************************************!*\
+  !*** ./node_modules/vuetify/lib/locale/pt.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  badge: 'Distintivo',
+  close: 'Fechar',
+  dataIterator: {
+    noResultsText: 'Nenhum dado encontrado',
+    loadingText: 'Carregando itens...'
+  },
+  dataTable: {
+    itemsPerPageText: 'Linhas por página:',
+    ariaLabel: {
+      sortDescending: 'Ordenado decrescente.',
+      sortAscending: 'Ordenado crescente.',
+      sortNone: 'Não ordenado.',
+      activateNone: 'Ative para remover a ordenação.',
+      activateDescending: 'Ative para ordenar decrescente.',
+      activateAscending: 'Ative para ordenar crescente.'
+    },
+    sortBy: 'Ordenar por'
+  },
+  dataFooter: {
+    itemsPerPageText: 'Itens por página:',
+    itemsPerPageAll: 'Todos',
+    nextPage: 'Próxima página',
+    prevPage: 'Página anterior',
+    firstPage: 'Primeira página',
+    lastPage: 'Última página',
+    pageText: '{0}-{1} de {2}'
+  },
+  datePicker: {
+    itemsSelected: '{0} selecionado(s)',
+    nextMonthAriaLabel: 'Próximo mês',
+    nextYearAriaLabel: 'Próximo ano',
+    prevMonthAriaLabel: 'Mês anterior',
+    prevYearAriaLabel: 'Ano anterior'
+  },
+  noDataText: 'Não há dados disponíveis',
+  carousel: {
+    prev: 'Visão anterior',
+    next: 'Próxima visão',
+    ariaLabel: {
+      delimiter: 'Slide {0} de {1} do carrossel'
+    }
+  },
+  calendar: {
+    moreEvents: 'Mais {0}'
+  },
+  fileInput: {
+    counter: '{0} arquivo(s)',
+    counterSize: '{0} arquivo(s) ({1} no total)'
+  },
+  timePicker: {
+    am: 'AM',
+    pm: 'PM'
+  },
+  pagination: {
+    ariaLabel: {
+      wrapper: 'Navegação de paginação',
+      next: 'Próxima página',
+      previous: 'Página anterior',
+      page: 'Ir à página {0}',
+      currentPage: 'Página atual, página {0}'
+    }
+  },
+  rating: {
+    ariaLabel: {
+      icon: 'Rating {0} of {1}'
+    }
+  }
+});
+//# sourceMappingURL=pt.js.map
 
 /***/ }),
 

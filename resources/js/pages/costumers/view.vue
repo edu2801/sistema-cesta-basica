@@ -338,11 +338,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <a class="text-primary" @click="addRelative">Adicionar mais parentes</a>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -434,7 +429,7 @@
                         <div class="col-12 col md-6">
                             <label class="form-label" for="habitationCondition">Condição</label>
                             <input :class="'input100 form-control '" type="text" id="habitationCondition"
-                                name="habitationCondition" placeholder="Condição" v-model="habitation.condition" />
+                                name="habitationCondition" placeholder="Condição" v-model="habitation.conditions" />
                         </div>
                         <div v-if="habitation.ownership === 'rented'" class="col-12 col-md-6">
                             <input :class="'input100 form-control '" name="value" placeholder="Valor do aluguel"
@@ -454,104 +449,49 @@
                 </div>
             </div>
 
-            <div class="mt-5 pb-5 d-flex align-items-center justify-content-between mx-10">
+            <!-- <div class="mt-5 pb-5 d-flex align-items-center justify-content-between mx-10">
                 <button class="btn btn-danger" @click="home">Cancelar</button>
                 <button class="btn btn-primary" @click="createCostumer">
                     Inserir usuário
                 </button>
-            </div>
+            </div> -->
         </div>
     </v-app>
 </template>
 
 <script>
 export default {
-    name: "CreateCostumer",
+    name: "viewCosumer",
+    props: {
+        data: String
+    },
     data() {
         return {
-            costumer: {
-                name: "",
-                phone: "",
-                birth_date: "",
-                marital_status: "",
-                rg: "",
-                cpf: "",
-                schooling: "",
-                occupation: "",
-                salary: "",
-                family_income: "",
-                cadastro_unico: false,
-                bolsa_familia: false,
-                prestacao_continuada: false,
-                renda_cidada: false,
-                cesta_basica: false,
-            },
-            address: {
-                street: "",
-                neighborhood: "",
-                number: "",
-                city: "",
-                state: "SP",
-                cep: "-",
-                complement: "-",
-                reference: "",
-            },
-            relatives: [
-                {
-                    name: "",
-                    relationship: "",
-                    age: "",
-                    occupation: "",
-                    salary: "",
-                },
-            ],
-            healthSituation: {
-                chronicDiseases: "",
-                vices: "",
-            },
-            habitation: {
-                ownership: "",
-                value: null,
-                condition: "",
-            },
-            observations: {
-                observation: "",
-            },
+            costumer: {},
+            address: {},
+            relatives: {},
+            healthSituation: {},
+            habitation: {},
+            observations: {},
 
             menu2: false,
         };
     },
     methods: {
-        createCostumer() {
-            let body = {
-                costumer: this.costumer,
-                address: this.address,
-                relatives: this.relatives,
-                healthSituation: this.healthSituation,
-                habitation: this.habitation,
-                observations: this.observations,
-            };
-            axios
-                .post("/costumers/insert", body)
-                .then((response) => {
-                    window.location.href = "/";
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
         home() {
             window.location.href = "/";
-        },
-        addRelative() {
-            this.relatives.push({
-                name: "",
-                relationship: "",
-                age: "",
-                occupation: "",
-                salary: "",
-            });
-        },
+        }
+    },
+    mounted() {
+        let personsData = JSON.parse(this.data)
+        this.costumer = personsData.costumer
+        this.address = personsData.address
+        this.relatives = personsData.familyGroup
+        this.healthSituation = personsData.healthSituation
+        this.habitation = personsData.habitation
+        this.observations = personsData.observations
+
+        console.log(personsData)
     },
 };
 </script>

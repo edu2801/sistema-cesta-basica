@@ -18,7 +18,7 @@ class CreateFamilyGroupTable extends Migration
             $table->foreignId('costumer_id')->constrained('costumers')->onDelete('cascade');
             $table->string('name');
             $table->string('relationship');
-            $table->date('birth_date');
+            $table->integer('age');
             $table->string('occupation');
             $table->float('salary');
             $table->timestamps();

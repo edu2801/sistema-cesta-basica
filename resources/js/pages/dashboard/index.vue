@@ -18,18 +18,14 @@
                 <template v-slot:item.birth_date="{ item }">
                     <td class="text-center">
                         {{
-                            new Date(item.birth_date).toLocaleDateString(
-                                "pt-br"
-                            )
+                            item.birth_date?.split("-").reverse().join("/")
                         }}
                     </td>
                 </template>
                 <template v-slot:item.last_redeem="{ item }">
                     <td class="text-center">
                         {{
-                            new Date(item.last_redeem).toLocaleDateString(
-                                "pt-br"
-                            )
+                            item.last_redeem?.split("-").reverse().join("/")                            
                         }}
                     </td>
                 </template>
@@ -40,14 +36,14 @@
                             class="icons-table my-auto text-success me-1"
                             title="Nova retirada"
                         >
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus">re</i>
                         </a>
                         <a
-                            :href="'/costumers/' + item.id"
+                            :href="'/costumers/view/' + item.id"
                             class="icons-table my-auto text-primary me-1"
                             title="Detalhes"
                         >
-                            <i class="fa fa-list-alt"></i>
+                            <i class="fa fa-list-alt">de</i>
                         </a>
                     </td>
                 </template>

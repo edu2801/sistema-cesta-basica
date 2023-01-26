@@ -2,7 +2,15 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">Navbar</a>
+                <a class="navbar-brand" href="/">
+                    <img
+                        src="/assets/images/logo.jpg"
+                        alt=""
+                        width="100"
+                        height="50"
+                        class="d-inline-block align-text-top"
+                    />
+                </a>
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -24,9 +32,9 @@
                                 >Início</a
                             >
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="/users">Usuários</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Sair</a>
                         </li>

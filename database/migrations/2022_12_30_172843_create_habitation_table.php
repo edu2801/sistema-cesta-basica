@@ -16,8 +16,9 @@ class CreateHabitationTable extends Migration
         Schema::create('habitation', function (Blueprint $table) {
             $table->id();
             $table->foreignId('costumer_id')->constrained('costumers')->onDelete('cascade');
-            $table->integer('ownership')->default(0);
+            $table->string('ownership')->nullable();
             $table->string('condition')->nullable();
+            $table->integer('value')->nullable();
             $table->timestamps();
         });
     }

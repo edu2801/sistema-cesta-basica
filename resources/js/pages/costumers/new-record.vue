@@ -2,8 +2,7 @@
     <div class="container">
         <h1>Confirmação</h1>
         <div>
-            Eu, <strong>{{ adminData.name }}</strong
-            >, confirmo que o(a) sr(a)
+            Eu confirmo que o(a) sr(a)
             <strong>{{ costumerData.name }}</strong> está retirando a Cesta
             Básica hoje
             {{ new Date().toLocaleDateString("pt-br") }}
