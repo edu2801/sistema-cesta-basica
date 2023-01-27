@@ -38,6 +38,8 @@ class CostumersController extends Controller
         $healthSituation = HealthSituationModel::where('costumer_id', $id)->first();
         $observations = ObservationsModel::where('costumer_id', $id)->first();
 
+        $reedeems = RedeemsModel::where('costumer_id', $id)->orderBy('created_at', 'desc')->get();
+
         $personsData = [
             'admin' => $admin,
             'costumer' => $costumer,
@@ -46,6 +48,7 @@ class CostumersController extends Controller
             'habitation' => $habitation,
             'healthSituation' => $healthSituation,
             'observations' => $observations,
+            'reedeems' => $reedeems,
         ];
 
         return view('pages.costumers.view', compact('personsData'));
@@ -56,14 +59,17 @@ class CostumersController extends Controller
         return view('pages.costumers.create');
     }
 
-    public static function insertRecord($id)
+    public static function insertRecord(Request $request , $id)
     {
+        $requestData = $request->all();
+
         DB::beginTransaction();
 
         $createRedeem = RedeemsModel::create([
             'costumer_id' => $id,
             'responsible_id' => Auth::user()->id,
             'responsible_name' => Auth::user()->name,
+            'observation' => $requestData['observation'] ?? null,
         ]);
 
         $updateCostumer = CostumersModel::where('id', $id)->update([

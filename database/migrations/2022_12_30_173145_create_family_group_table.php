@@ -19,8 +19,8 @@ class CreateFamilyGroupTable extends Migration
             $table->string('name');
             $table->string('relationship');
             $table->integer('age');
-            $table->string('occupation');
-            $table->float('salary');
+            $table->string('occupation')->nullable();
+            $table->float('salary')->nullable();
             $table->timestamps();
         });
     }

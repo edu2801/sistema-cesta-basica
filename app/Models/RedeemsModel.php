@@ -16,6 +16,7 @@ class RedeemsModel extends Model
         'costumer_id',
         'responsible_id',
         'responsible_name',
+        'observation',
         'created_at',
         'updated_at',
     ];

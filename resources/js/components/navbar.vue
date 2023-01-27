@@ -1,7 +1,7 @@
 <template>
     <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" >
+            <div class="container-fluid px-5">
                 <a class="navbar-brand" href="/">
                     <img
                         src="/assets/images/logo.jpg"
@@ -26,7 +26,7 @@
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a
-                                class="nav-link"
+                                class="nav-link fs-4 text-black"
                                 aria-current="page"
                                 href="/"
                                 >Início</a
@@ -36,7 +36,7 @@
                             <a class="nav-link" href="/users">Usuários</a>
                         </li> -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/logout">Sair</a>
+                            <a class="nav-link fs-4 text-black" href="/logout">Sair</a>
                         </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="#">Pricing</a>

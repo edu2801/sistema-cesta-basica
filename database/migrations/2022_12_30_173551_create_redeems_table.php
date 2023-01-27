@@ -17,6 +17,7 @@ class CreateRedeemsTable extends Migration
             $table->id();
             $table->foreignId('costumer_id')->constrained('costumers')->onDelete('cascade');
             $table->string('responsible_name');
+            $table->string('observation')->nullable();
             $table->integer('responsible_id');
             $table->timestamps();
         });

@@ -13,7 +13,7 @@ class HealthSituationModel extends Model
 
     protected $fillable = [
         'costumer_id',
-        'chronicDiseases',
+        'chronic_diseases',
         'vices',
         'created_at',
         'updated_at',

@@ -5583,12 +5583,15 @@ __webpack_require__.r(__webpack_exports__);
     return {
       dataParsed: JSON.parse(this.data),
       adminData: JSON.parse(this.data).admin,
-      costumerData: JSON.parse(this.data).costumer
+      costumerData: JSON.parse(this.data).costumer,
+      observation: ''
     };
   },
   methods: {
     confirm: function confirm() {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/costumers/insert-record/" + this.costumerData.id).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post("/costumers/insert-record/" + this.costumerData.id, {
+        observation: this.observation
+      }).then(function (response) {
         window.location.href = "/";
       })["catch"](function (error) {
         console.log(error);
@@ -5610,10 +5613,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _components_navbar_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../components/navbar.vue */ "./resources/js/components/navbar.vue");
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "viewCosumer",
   props: {
     data: String
+  },
+  components: {
+    navbarVue: _components_navbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   data: function data() {
     return {
@@ -5623,7 +5631,7 @@ __webpack_require__.r(__webpack_exports__);
       healthSituation: {},
       habitation: {},
       observations: {},
-      menu2: false
+      reedeems: []
     };
   },
   methods: {
@@ -5639,6 +5647,7 @@ __webpack_require__.r(__webpack_exports__);
     this.healthSituation = personsData.healthSituation;
     this.habitation = personsData.habitation;
     this.observations = personsData.observations;
+    this.reedeems = personsData.reedeems;
     console.log(personsData);
   }
 });
@@ -5705,7 +5714,8 @@ __webpack_require__.r(__webpack_exports__);
         text: "Ações",
         value: "actions",
         align: "center"
-      }]
+      }],
+      search: ""
     };
   }
 });
@@ -5982,7 +5992,7 @@ var staticRenderFns = [function () {
   return _c("div", [_c("nav", {
     staticClass: "navbar navbar-expand-lg navbar-light bg-light"
   }, [_c("div", {
-    staticClass: "container-fluid"
+    staticClass: "container-fluid px-5"
   }, [_c("a", {
     staticClass: "navbar-brand",
     attrs: {
@@ -6018,7 +6028,7 @@ var staticRenderFns = [function () {
   }, [_c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link",
+    staticClass: "nav-link fs-4 text-black",
     attrs: {
       "aria-current": "page",
       href: "/"
@@ -6026,7 +6036,7 @@ var staticRenderFns = [function () {
   }, [_vm._v("Início")])]), _vm._v(" "), _c("li", {
     staticClass: "nav-item"
   }, [_c("a", {
-    staticClass: "nav-link",
+    staticClass: "nav-link fs-4 text-black",
     attrs: {
       href: "/logout"
     }
@@ -7447,8 +7457,38 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
+    staticClass: "bg-white"
+  }, [_c("div", {
     staticClass: "container"
-  }, [_c("h1", [_vm._v("Confirmação")]), _vm._v(" "), _c("div", [_vm._v("\n        Eu confirmo que o(a) sr(a)\n        "), _c("strong", [_vm._v(_vm._s(_vm.costumerData.name))]), _vm._v(" está retirando a Cesta\n        Básica hoje\n        " + _vm._s(new Date().toLocaleDateString("pt-br")) + "\n    ")]), _vm._v(" "), _c("div", [_c("a", {
+  }, [_c("h1", [_vm._v("Confirmação")]), _vm._v(" "), _c("div", {
+    staticClass: "mt-1"
+  }, [_vm._v("\n            Confirmo que o(a) sr(a)\n            "), _c("strong", [_vm._v(_vm._s(_vm.costumerData.name))]), _vm._v(" está retirando a Cesta\n            Básica hoje\n            "), _c("strong", [_vm._v("\n                " + _vm._s(new Date().toLocaleDateString("pt-br")) + "\n            ")])]), _vm._v(" "), _c("div", {
+    staticClass: "bg-white"
+  }, [_c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.observation,
+      expression: "observation"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "observation",
+      placeholder: "Observação",
+      rows: "5"
+    },
+    domProps: {
+      value: _vm.observation
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.observation = $event.target.value;
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "mt-2"
+  }, [_c("a", {
     staticClass: "btn btn-secondary",
     attrs: {
       href: "/"
@@ -7458,7 +7498,7 @@ var render = function render() {
     on: {
       click: _vm.confirm
     }
-  }, [_vm._v("Confirmar")])])]);
+  }, [_vm._v("Confirmar")])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -7481,8 +7521,69 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("v-app", {
+  return _c("div", {
+    staticClass: "bg-white"
+  }, [_c("navbarVue"), _vm._v(" "), _c("div", {
     staticClass: "container"
+  }, [_c("div", {
+    staticClass: "mb-3"
+  }, [_c("div", [_vm._v("\n                Nome: "), _c("h2", {
+    staticClass: "d-inline"
+  }, [_vm._v(_vm._s(_vm.costumer.name))])]), _vm._v(" "), _c("div", [_vm._v("\n                Telefone: "), _c("h5", {
+    staticClass: "d-inline"
+  }, [_vm._v(_vm._s(_vm.costumer.phone))])])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("div", {
+    staticClass: "tab-content",
+    attrs: {
+      id: "nav-tabContent"
+    }
+  }, [_c("div", {
+    staticClass: "tab-pane fade show active",
+    attrs: {
+      id: "nav-home",
+      role: "tabpanel",
+      "aria-labelledby": "nav-home-tab",
+      tabindex: "0"
+    }
+  }, [_c("v-app", {
+    staticClass: "mt-3"
+  }, [_c("v-data-table", {
+    staticClass: "elevation-1",
+    attrs: {
+      headers: [{
+        text: "Data",
+        value: "created_at"
+      }, {
+        text: "Horário",
+        value: "time"
+      }, {
+        text: "Observação",
+        value: "observation"
+      }],
+      items: _vm.reedeems
+    },
+    scopedSlots: _vm._u([{
+      key: "item.created_at",
+      fn: function fn(_ref) {
+        var item = _ref.item;
+        return [_vm._v("\n                            " + _vm._s(new Date(item.created_at).toLocaleDateString("pt-br")) + "\n                        ")];
+      }
+    }, {
+      key: "item.time",
+      fn: function fn(_ref2) {
+        var item = _ref2.item;
+        return [_vm._v("\n                            " + _vm._s(new Date(item.created_at).toLocaleTimeString("pt-br").split(":").slice(0, 2).join("h")) + "\n                        ")];
+      }
+    }])
+  })], 1)], 1), _vm._v(" "), _c("div", {
+    staticClass: "tab-pane fade",
+    attrs: {
+      id: "nav-profile",
+      role: "tabpanel",
+      "aria-labelledby": "nav-profile-tab",
+      tabindex: "0"
+    }
+  }, [_c("v-app", {
+    staticClass: "mt-3"
   }, [_c("div", {
     staticClass: "col-12"
   }, [_c("div", {
@@ -7508,6 +7609,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "name",
       placeholder: "Nome",
       type: "text"
@@ -7545,6 +7647,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "phone",
       placeholder: "Telefone",
       type: "text"
@@ -7573,56 +7676,16 @@ var render = function render() {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
-  }, [_vm._v("Data de nascimento")]), _vm._v(" "), _c("v-menu", {
+  }, [_vm._v("Data de nascimento")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
     attrs: {
-      "close-on-content-click": false,
-      transition: "scale-transition",
-      "max-width": "290"
+      disabled: "",
+      type: "text"
     },
-    scopedSlots: _vm._u([{
-      key: "activator",
-      fn: function fn(_ref) {
-        var on = _ref.on,
-          attrs = _ref.attrs;
-        return [_c("v-text-field", _vm._g(_vm._b({
-          staticClass: "pt-0",
-          attrs: {
-            readonly: ""
-          },
-          model: {
-            value: _vm.costumer.birth_date.split("-").reverse().join("/"),
-            callback: function callback($$v) {
-              _vm.$set(_vm.costumer.birth_date.split("-").reverse(), "join('/')", $$v);
-            },
-            expression: "\n                                    costumer.birth_date\n                                        .split('-')\n                                        .reverse()\n                                        .join('/')\n                                "
-          }
-        }, "v-text-field", attrs, false), on))];
-      }
-    }]),
-    model: {
-      value: _vm.menu2,
-      callback: function callback($$v) {
-        _vm.menu2 = $$v;
-      },
-      expression: "menu2"
+    domProps: {
+      value: _vm.costumer.birth_date.split("-").reverse().join("/")
     }
-  }, [_vm._v(" "), _c("v-date-picker", {
-    attrs: {
-      "no-title": ""
-    },
-    on: {
-      input: function input($event) {
-        _vm.menu2 = false;
-      }
-    },
-    model: {
-      value: _vm.costumer.birth_date,
-      callback: function callback($$v) {
-        _vm.$set(_vm.costumer, "birth_date", $$v);
-      },
-      expression: "costumer.birth_date"
-    }
-  })], 1)], 1), _vm._v(" "), _c("div", {
+  })]), _vm._v(" "), _c("div", {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
@@ -7637,6 +7700,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "marital_status",
       placeholder: "Estado Civil",
       type: "text"
@@ -7676,6 +7740,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "rg",
       placeholder: "RG",
       type: "text"
@@ -7713,6 +7778,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "cpf",
       placeholder: "CPF",
       type: "text"
@@ -7752,6 +7818,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "schooling",
       placeholder: "Escolaridade",
       type: "text"
@@ -7789,6 +7856,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "occupation",
       placeholder: "Profissão",
       type: "text"
@@ -7828,6 +7896,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "salary",
       placeholder: "Salário",
       type: "number"
@@ -7865,6 +7934,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "family_income",
       placeholder: "Renda Familiar",
       type: "number"
@@ -7910,6 +7980,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "street",
       placeholder: "Rua",
       type: "text"
@@ -7947,6 +8018,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "number",
       placeholder: "Número",
       type: "string"
@@ -7986,6 +8058,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "neighborhood",
       placeholder: "Bairro",
       type: "text"
@@ -8023,6 +8096,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "city",
       placeholder: "Cidade",
       type: "text"
@@ -8062,6 +8136,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "reference",
       placeholder: "Referência",
       type: "text"
@@ -8108,6 +8183,7 @@ var render = function render() {
       }],
       "class": "input100 form-control ",
       attrs: {
+        disabled: "",
         name: "relative_name",
         placeholder: "Nome",
         type: "text"
@@ -8145,6 +8221,7 @@ var render = function render() {
       }],
       "class": "input100 form-control ",
       attrs: {
+        disabled: "",
         name: "relative_relationship",
         placeholder: "Parentesco",
         type: "text"
@@ -8182,6 +8259,7 @@ var render = function render() {
       }],
       "class": "input100 form-control ",
       attrs: {
+        disabled: "",
         name: "relative_age",
         placeholder: "Idade",
         type: "text"
@@ -8219,6 +8297,7 @@ var render = function render() {
       }],
       "class": "input100 form-control ",
       attrs: {
+        disabled: "",
         name: "occupation",
         placeholder: "Profissão",
         type: "text"
@@ -8256,6 +8335,7 @@ var render = function render() {
       }],
       "class": "input100 form-control ",
       attrs: {
+        disabled: "",
         name: "relative_salary",
         placeholder: "Salário",
         type: "text"
@@ -8283,7 +8363,7 @@ var render = function render() {
     staticClass: "card mt-5"
   }, [_c("div", {
     staticClass: "card-header"
-  }, [_vm._v("\n                Benefícios de transferência de renda\n            ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n                                Benefícios de transferência de renda\n                            ")]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "row"
@@ -8297,6 +8377,7 @@ var render = function render() {
       expression: "costumer.cadastro_unico"
     }],
     attrs: {
+      disabled: "",
       type: "checkbox",
       id: "checkCadastroUnico"
     },
@@ -8335,6 +8416,7 @@ var render = function render() {
       expression: "costumer.bolsa_familia"
     }],
     attrs: {
+      disabled: "",
       type: "checkbox",
       id: "checkBolsaFamilia"
     },
@@ -8373,6 +8455,7 @@ var render = function render() {
       expression: "costumer.prestacao_continuada"
     }],
     attrs: {
+      disabled: "",
       type: "checkbox",
       id: "checkPrestacaoContinuada"
     },
@@ -8411,6 +8494,7 @@ var render = function render() {
       expression: "costumer.renda_cidada"
     }],
     attrs: {
+      disabled: "",
       type: "checkbox",
       id: "checkRendaCidada"
     },
@@ -8449,6 +8533,7 @@ var render = function render() {
       expression: "costumer.cesta_basica"
     }],
     attrs: {
+      disabled: "",
       type: "checkbox",
       id: "checkCestaBasica"
     },
@@ -8500,6 +8585,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "chronicDiseases",
       placeholder: "Doenças Crônicas",
       type: "text"
@@ -8537,6 +8623,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "vices",
       placeholder: "Vícios",
       type: "text"
@@ -8577,6 +8664,7 @@ var render = function render() {
       expression: "habitation.ownership"
     }],
     attrs: {
+      disabled: "",
       type: "radio",
       id: "radioRented",
       value: "rented"
@@ -8603,6 +8691,7 @@ var render = function render() {
       expression: "habitation.ownership"
     }],
     attrs: {
+      disabled: "",
       type: "radio",
       id: "radioOwned",
       value: "owned"
@@ -8629,6 +8718,7 @@ var render = function render() {
       expression: "habitation.ownership"
     }],
     attrs: {
+      disabled: "",
       type: "radio",
       id: "radioGived",
       value: "gived"
@@ -8658,28 +8748,31 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.habitation.conditions,
-      expression: "habitation.conditions"
+      value: _vm.habitation.condition,
+      expression: "habitation.condition"
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       type: "text",
       id: "habitationCondition",
       name: "habitationCondition",
       placeholder: "Condição"
     },
     domProps: {
-      value: _vm.habitation.conditions
+      value: _vm.habitation.condition
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.habitation, "conditions", $event.target.value);
+        _vm.$set(_vm.habitation, "condition", $event.target.value);
       }
     }
   })]), _vm._v(" "), _vm.habitation.ownership === "rented" ? _c("div", {
     staticClass: "col-12 col-md-6"
-  }, [_c("input", {
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Valor do aluguel")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8688,6 +8781,7 @@ var render = function render() {
     }],
     "class": "input100 form-control ",
     attrs: {
+      disabled: "",
       name: "value",
       placeholder: "Valor do aluguel",
       type: "number"
@@ -8718,6 +8812,7 @@ var render = function render() {
     }],
     "class": "form-control",
     attrs: {
+      disabled: "",
       placeholder: "Digite as observações aqui...",
       rows: "4"
     },
@@ -8730,9 +8825,41 @@ var render = function render() {
         _vm.$set(_vm.observations, "observation", $event.target.value);
       }
     }
-  })])])])])]);
+  })])])])])])], 1)])])], 1);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("nav", [_c("div", {
+    staticClass: "nav nav-tabs",
+    attrs: {
+      id: "nav-tab",
+      role: "tablist"
+    }
+  }, [_c("button", {
+    staticClass: "nav-link active",
+    attrs: {
+      id: "nav-home-tab",
+      "data-bs-toggle": "tab",
+      "data-bs-target": "#nav-home",
+      type: "button",
+      role: "tab",
+      "aria-controls": "nav-home",
+      "aria-selected": "true"
+    }
+  }, [_vm._v("Histórico")]), _vm._v(" "), _c("button", {
+    staticClass: "nav-link",
+    attrs: {
+      id: "nav-profile-tab",
+      "data-bs-toggle": "tab",
+      "data-bs-target": "#nav-profile",
+      type: "button",
+      role: "tab",
+      "aria-controls": "nav-profile",
+      "aria-selected": "false"
+    }
+  }, [_vm._v("Ficha\n                    cadastral")])])]);
+}];
 render._withStripped = true;
 
 
@@ -8754,13 +8881,34 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
+    staticClass: "bg-white"
+  }, [_c("navbarVue"), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("v-app", {
     staticClass: "container"
-  }, [_c("navbarVue"), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("v-app", [_c("v-data-table", {
+  }, [_c("v-data-table", {
     attrs: {
       headers: _vm.columns,
-      items: _vm.dataTable
+      items: _vm.dataTable,
+      search: _vm.search
     },
     scopedSlots: _vm._u([{
+      key: "top",
+      fn: function fn() {
+        return [_c("v-text-field", {
+          staticClass: "mx-4",
+          attrs: {
+            label: "Pesquisar"
+          },
+          model: {
+            value: _vm.search,
+            callback: function callback($$v) {
+              _vm.search = $$v;
+            },
+            expression: "search"
+          }
+        })];
+      },
+      proxy: true
+    }, {
       key: "item.birth_date",
       fn: function fn(_ref) {
         var _item$birth_date;
@@ -8795,7 +8943,7 @@ var render = function render() {
           }
         }, [_c("i", {
           staticClass: "fa fa-plus"
-        }, [_vm._v("re")])]), _vm._v(" "), _c("a", {
+        })]), _vm._v(" "), _c("a", {
           staticClass: "icons-table my-auto text-primary me-1",
           attrs: {
             href: "/costumers/view/" + item.id,
@@ -8803,7 +8951,7 @@ var render = function render() {
           }
         }, [_c("i", {
           staticClass: "fa fa-list-alt"
-        }, [_vm._v("de")])])])];
+        })])])];
       }
     }])
   })], 1)], 1);
@@ -8812,6 +8960,8 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
+    staticClass: "container"
+  }, [_c("div", {
     staticClass: "mx-5 d-flex justify-content-between align-items-center"
   }, [_c("h1", {
     staticClass: "page-title"
@@ -8822,7 +8972,7 @@ var staticRenderFns = [function () {
     }
   }, [_c("span", [_c("i", {
     staticClass: "fe fe-plus"
-  })]), _vm._v("\n            Cadastrar beneficiário\n        ")])]);
+  })]), _vm._v("\n                Novo cadastro\n            ")])])]);
 }];
 render._withStripped = true;
 
