@@ -5497,8 +5497,8 @@ __webpack_require__.r(__webpack_exports__);
         neighborhood: "",
         number: "",
         city: "",
-        state: "SP",
-        cep: "-",
+        state: "",
+        cep: "",
         complement: "-",
         reference: ""
       },
@@ -5510,7 +5510,7 @@ __webpack_require__.r(__webpack_exports__);
         salary: ""
       }],
       healthSituation: {
-        chronicDiseases: "",
+        chronic_diseases: "",
         vices: ""
       },
       habitation: {
@@ -5526,6 +5526,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     createCostumer: function createCostumer() {
+      var _this = this;
+      var loader = this.$loading.show();
       var body = {
         costumer: this.costumer,
         address: this.address,
@@ -5535,9 +5537,12 @@ __webpack_require__.r(__webpack_exports__);
         observations: this.observations
       };
       axios.post("/costumers/insert", body).then(function (response) {
+        loader.hide();
         window.location.href = "/";
       })["catch"](function (error) {
         console.log(error);
+        loader.hide();
+        _this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
       });
     },
     home: function home() {
@@ -5551,6 +5556,28 @@ __webpack_require__.r(__webpack_exports__);
         occupation: "",
         salary: ""
       });
+    }
+  },
+  watch: {
+    address: {
+      handler: function handler(val) {
+        var _this2 = this;
+        var cep = val.cep.replace(/\D/g, "");
+        if (cep.length == 8) {
+          var loader = this.$loading.show();
+          axios.get("https://viacep.com.br/ws/".concat(val.cep, "/json/")).then(function (response) {
+            loader.hide();
+            _this2.address.street = response.data.logradouro;
+            _this2.address.neighborhood = response.data.bairro;
+            _this2.address.city = response.data.localidade;
+            _this2.address.state = response.data.uf;
+          })["catch"](function (error) {
+            loader.hide();
+            console.log(error);
+          });
+        }
+      },
+      deep: true
     }
   }
 });
@@ -5637,6 +5664,18 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     home: function home() {
       window.location.href = "/";
+    },
+    deleteCostumer: function deleteCostumer() {
+      var _this = this;
+      var confirmation = confirm("Deseja realmente excluir este usuário?");
+      if (!confirmation) {
+        return;
+      }
+      axios["delete"]("/costumers/" + this.costumer.id).then(function (response) {
+        _this.home();
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   },
   mounted: function mounted() {
@@ -5648,6 +5687,7 @@ __webpack_require__.r(__webpack_exports__);
     this.habitation = personsData.habitation;
     this.observations = personsData.observations;
     this.reedeems = personsData.reedeems;
+    this.costumer.birth_date = this.costumer.birth_date.split('-').reverse().join('/') || null;
     console.log(personsData);
   }
 });
@@ -6581,6 +6621,43 @@ var render = function render() {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
+  }, [_vm._v("CEP")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.cep,
+      expression: "address.cep"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "cep",
+      placeholder: "CEP",
+      type: "text"
+    },
+    domProps: {
+      value: _vm.address.cep
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "cep", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
   }, [_vm._v("Rua")]), _vm._v(" "), _c("div", {
     staticClass: "wrap-input100"
   }, [_c("input", {
@@ -6614,7 +6691,9 @@ var render = function render() {
     attrs: {
       "aria-hidden": "true"
     }
-  })])])]), _vm._v(" "), _c("div", {
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
@@ -6651,9 +6730,7 @@ var render = function render() {
     attrs: {
       "aria-hidden": "true"
     }
-  })])])])]), _vm._v(" "), _c("div", {
-    staticClass: "row"
-  }, [_c("div", {
+  })])])]), _vm._v(" "), _c("div", {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
@@ -6690,7 +6767,9 @@ var render = function render() {
     attrs: {
       "aria-hidden": "true"
     }
-  })])])]), _vm._v(" "), _c("div", {
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "row"
+  }, [_c("div", {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
@@ -6724,6 +6803,44 @@ var render = function render() {
     staticClass: "symbol-input100"
   }, [_c("i", {
     staticClass: "zmdi zmdi-email",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6 mb-3"
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Estado")]), _vm._v(" "), _c("div", {
+    staticClass: "wrap-input100"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.address.state,
+      expression: "address.state"
+    }],
+    "class": "input100 form-control ",
+    attrs: {
+      name: "state",
+      placeholder: "Estado",
+      type: "text",
+      maxlength: "2"
+    },
+    domProps: {
+      value: _vm.address.state
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.address, "state", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "focus-input100"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "symbol-input100"
+  }, [_c("i", {
+    staticClass: "mdi mdi-account",
     attrs: {
       "aria-hidden": "true"
     }
@@ -7186,22 +7303,22 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.healthSituation.chronicDiseases,
-      expression: "healthSituation.chronicDiseases"
+      value: _vm.healthSituation.chronic_diseases,
+      expression: "healthSituation.chronic_diseases"
     }],
     "class": "input100 form-control ",
     attrs: {
-      name: "chronicDiseases",
+      name: "chronic_diseases",
       placeholder: "Doenças Crônicas",
       type: "text"
     },
     domProps: {
-      value: _vm.healthSituation.chronicDiseases
+      value: _vm.healthSituation.chronic_diseases
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.healthSituation, "chronicDiseases", $event.target.value);
+        _vm.$set(_vm.healthSituation, "chronic_diseases", $event.target.value);
       }
     }
   }), _vm._v(" "), _c("span", {
@@ -7531,7 +7648,14 @@ var render = function render() {
     staticClass: "d-inline"
   }, [_vm._v(_vm._s(_vm.costumer.name))])]), _vm._v(" "), _c("div", [_vm._v("\n                Telefone: "), _c("h5", {
     staticClass: "d-inline"
-  }, [_vm._v(_vm._s(_vm.costumer.phone))])])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(_vm.costumer.phone))])]), _vm._v(" "), _c("div", {
+    staticClass: "float-end"
+  }, [_c("button", {
+    staticClass: "btn btn-danger",
+    on: {
+      click: _vm.deleteCostumer
+    }
+  }, [_vm._v("Excluir")])])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "tab-content",
     attrs: {
       id: "nav-tabContent"
@@ -7683,7 +7807,7 @@ var render = function render() {
       type: "text"
     },
     domProps: {
-      value: _vm.costumer.birth_date.split("-").reverse().join("/")
+      value: _vm.costumer.birth_date
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "col-12 col-md-6 mb-3"
@@ -8576,12 +8700,12 @@ var render = function render() {
     staticClass: "form-label"
   }, [_vm._v("Doenças crônicas")]), _vm._v(" "), _c("div", {
     staticClass: "wrap-input100"
-  }, [_c("input", {
+  }, [!!_vm.healthSituation ? _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.healthSituation.chronicDiseases,
-      expression: "healthSituation.chronicDiseases"
+      value: _vm.healthSituation.chronic_diseases,
+      expression: "healthSituation.chronic_diseases"
     }],
     "class": "input100 form-control ",
     attrs: {
@@ -8591,15 +8715,15 @@ var render = function render() {
       type: "text"
     },
     domProps: {
-      value: _vm.healthSituation.chronicDiseases
+      value: _vm.healthSituation.chronic_diseases
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.healthSituation, "chronicDiseases", $event.target.value);
+        _vm.$set(_vm.healthSituation, "chronic_diseases", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("span", {
+  }) : _vm._e(), _vm._v(" "), _c("span", {
     staticClass: "focus-input100"
   }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
@@ -8614,7 +8738,7 @@ var render = function render() {
     staticClass: "form-label"
   }, [_vm._v("Vícios")]), _vm._v(" "), _c("div", {
     staticClass: "wrap-input100"
-  }, [_c("input", {
+  }, [!!_vm.healthSituation ? _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8637,7 +8761,7 @@ var render = function render() {
         _vm.$set(_vm.healthSituation, "vices", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("span", {
+  }) : _vm._e(), _vm._v(" "), _c("span", {
     staticClass: "focus-input100"
   }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
@@ -8803,7 +8927,7 @@ var render = function render() {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "row"
-  }, [_c("textarea", {
+  }, [!!_vm.observations ? _c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -8825,7 +8949,7 @@ var render = function render() {
         _vm.$set(_vm.observations, "observation", $event.target.value);
       }
     }
-  })])])])])])], 1)])])], 1);
+  }) : _vm._e()])])])])])], 1)])])], 1);
 };
 var staticRenderFns = [function () {
   var _vm = this,

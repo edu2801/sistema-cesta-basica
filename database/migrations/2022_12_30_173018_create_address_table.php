@@ -16,12 +16,12 @@ class CreateAddressTable extends Migration
         Schema::create('address', function (Blueprint $table) {
             $table->id();
             $table->foreignId('costumer_id')->constrained('costumers')->onDelete('cascade');
-            $table->string('street');
-            $table->string('neighborhood');
-            $table->string('number');
-            $table->string('city');
-            $table->string('state');
-            $table->string('cep');
+            $table->string('street')->nullable();
+            $table->string('neighborhood')->nullable();
+            $table->string('number')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('cep')->nullable();
             $table->string('complement')->nullable();
             $table->string('reference')->nullable();
             $table->timestamps();

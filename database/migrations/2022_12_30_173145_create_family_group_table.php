@@ -16,9 +16,9 @@ class CreateFamilyGroupTable extends Migration
         Schema::create('family_group', function (Blueprint $table) {
             $table->id();
             $table->foreignId('costumer_id')->constrained('costumers')->onDelete('cascade');
-            $table->string('name');
-            $table->string('relationship');
-            $table->integer('age');
+            $table->string('name')->nullable();
+            $table->string('relationship')->nullable();
+            $table->integer('age')->nullable();
             $table->string('occupation')->nullable();
             $table->float('salary')->nullable();
             $table->timestamps();

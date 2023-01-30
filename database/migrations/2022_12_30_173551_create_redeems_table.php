@@ -16,9 +16,9 @@ class CreateRedeemsTable extends Migration
         Schema::create('redeems', function (Blueprint $table) {
             $table->id();
             $table->foreignId('costumer_id')->constrained('costumers')->onDelete('cascade');
-            $table->string('responsible_name');
+            $table->string('responsible_name')->nullable();
             $table->string('observation')->nullable();
-            $table->integer('responsible_id');
+            $table->integer('responsible_id')->nullable();
             $table->timestamps();
         });
     }

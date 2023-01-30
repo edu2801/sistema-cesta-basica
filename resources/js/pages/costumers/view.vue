@@ -9,6 +9,10 @@
                 <div>
                     Telefone: <h5 class="d-inline">{{ costumer.phone }}</h5>
                 </div>
+
+                <div class="float-end">
+                    <button class="btn btn-danger" @click="deleteCostumer">Excluir</button>
+                </div>
             </div>
 
             <nav>
@@ -80,7 +84,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Data de nascimento</label>
                                             <input disabled type="text" class="form-control"
-                                                :value="costumer.birth_date.split('-').reverse().join('/')">
+                                                :value="costumer.birth_date">
                                         </div>
 
                                         <div class="col-12 col-md-6 mb-3">
@@ -360,9 +364,10 @@
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Doenças crônicas</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="chronicDiseases"
+                                                <input v-if="!!healthSituation" disabled
+                                                    :class="'input100 form-control '" name="chronicDiseases"
                                                     placeholder="Doenças Crônicas" type="text"
-                                                    v-model="healthSituation.chronicDiseases" />
+                                                    v-model="healthSituation.chronic_diseases" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -373,8 +378,9 @@
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Vícios</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="vices"
-                                                    placeholder="Vícios" type="text" v-model="healthSituation.vices" />
+                                                <input v-if="!!healthSituation" disabled
+                                                    :class="'input100 form-control '" name="vices" placeholder="Vícios"
+                                                    type="text" v-model="healthSituation.vices" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -428,7 +434,7 @@
                                 <div class="card-header">Observações adicionais</div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <textarea disabled :class="'form-control'"
+                                        <textarea v-if="!!observations" disabled :class="'form-control'"
                                             placeholder="Digite as observações aqui..." rows="4"
                                             v-model="observations.observation"></textarea>
                                     </div>
@@ -474,17 +480,37 @@ export default {
     methods: {
         home() {
             window.location.href = "/";
-        }
+        },
+
+        deleteCostumer() {
+
+            let confirmation = confirm("Deseja realmente excluir este usuário?");
+
+            if (!confirmation) {
+                return;
+            }
+
+            axios
+                .delete("/costumers/" + this.costumer.id)
+                .then((response) => {
+                    this.home();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
     },
     mounted() {
-        let personsData = JSON.parse(this.data)
-        this.costumer = personsData.costumer
-        this.address = personsData.address
-        this.relatives = personsData.familyGroup
-        this.healthSituation = personsData.healthSituation
-        this.habitation = personsData.habitation
-        this.observations = personsData.observations
-        this.reedeems = personsData.reedeems
+        let personsData = JSON.parse(this.data);
+        this.costumer = personsData.costumer;
+        this.address = personsData.address;
+        this.relatives = personsData.familyGroup;
+        this.healthSituation = personsData.healthSituation;
+        this.habitation = personsData.habitation;
+        this.observations = personsData.observations;
+        this.reedeems = personsData.reedeems;
+
+        this.costumer.birth_date = this.costumer.birth_date.split('-').reverse().join('/') || null;
 
         console.log(personsData)
     },

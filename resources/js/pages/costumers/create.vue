@@ -147,6 +147,18 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12 col-md-6 mb-3">
+                            <label class="form-label">CEP</label>
+                            <div class="wrap-input100">
+                                <input :class="'input100 form-control '" name="cep" placeholder="CEP" type="text"
+                                    v-model="address.cep" />
+                                <span class="focus-input100"></span>
+                                <span class="symbol-input100">
+                                    <i aria-hidden="true" class="zmdi zmdi-email"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 mb-3">
                             <label class="form-label">Rua</label>
                             <div class="wrap-input100">
                                 <input :class="'input100 form-control '" name="street" placeholder="Rua" type="text"
@@ -157,7 +169,9 @@
                                 </span>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="row">
                         <div class="col-12 col-md-6 mb-3">
                             <label class="form-label">Número</label>
                             <div class="wrap-input100">
@@ -169,9 +183,7 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row">
                         <div class="col-12 col-md-6 mb-3">
                             <label class="form-label">Bairro</label>
                             <div class="wrap-input100">
@@ -183,7 +195,9 @@
                                 </span>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="row">
                         <div class="col-12 col-md-6 mb-3">
                             <label class="form-label">Cidade</label>
                             <div class="wrap-input100">
@@ -195,50 +209,19 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- <div class="row">
                         <div class="col-12 col-md-6 mb-3">
                             <label class="form-label">Estado</label>
                             <div class="wrap-input100">
-                                <input
-                                    :class="'input100 form-control '"
-                                    name="state"
-                                    placeholder="Estado"
-                                    type="text"
-                                    v-model="address.state"
-                                    maxlength="2"
-                                />
+                                <input :class="'input100 form-control '" name="state" placeholder="Estado" type="text"
+                                    v-model="address.state" maxlength="2" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
-                                    <i
-                                        aria-hidden="true"
-                                        class="mdi mdi-account"
-                                    ></i>
+                                    <i aria-hidden="true" class="mdi mdi-account"></i>
                                 </span>
                             </div>
                         </div>
-
-                        <div class="col-12 col-md-6 mb-3">
-                            <label class="form-label">CEP</label>
-                            <div class="wrap-input100">
-                                <input
-                                    :class="'input100 form-control '"
-                                    name="cep"
-                                    placeholder="CEP"
-                                    type="text"
-                                    v-model="address.cep"
-                                />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i
-                                        aria-hidden="true"
-                                        class="zmdi zmdi-email"
-                                    ></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div> -->
+                    </div>
 
                     <div class="row">
                         <!-- <div class="col-12 col-md-6 mb-3">
@@ -318,8 +301,8 @@
                         <div class="col-12 col-md-2 mb-3">
                             <label class="form-label">Profissão</label>
                             <div class="wrap-input100">
-                                <input :class="'input100 form-control '" name="occupation"
-                                    placeholder="Profissão" type="text" v-model="relative.occupation" />
+                                <input :class="'input100 form-control '" name="occupation" placeholder="Profissão"
+                                    type="text" v-model="relative.occupation" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -386,9 +369,9 @@
                         <div class="col-12 col-md-4 mb-3">
                             <label class="form-label">Doenças crônicas</label>
                             <div class="wrap-input100">
-                                <input :class="'input100 form-control '" name="chronicDiseases"
+                                <input :class="'input100 form-control '" name="chronic_diseases"
                                     placeholder="Doenças Crônicas" type="text"
-                                    v-model="healthSituation.chronicDiseases" />
+                                    v-model="healthSituation.chronic_diseases" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -448,8 +431,8 @@
                 <div class="card-header">Observações adicionais</div>
                 <div class="card-body">
                     <div class="row">
-                        <textarea :class="'form-control'" placeholder="Digite as observações aqui..."
-                            rows="4" v-model="observations.observation" ></textarea>
+                        <textarea :class="'form-control'" placeholder="Digite as observações aqui..." rows="4"
+                            v-model="observations.observation"></textarea>
                     </div>
                 </div>
             </div>
@@ -491,8 +474,8 @@ export default {
                 neighborhood: "",
                 number: "",
                 city: "",
-                state: "SP",
-                cep: "-",
+                state: "",
+                cep: "",
                 complement: "-",
                 reference: "",
             },
@@ -506,7 +489,7 @@ export default {
                 },
             ],
             healthSituation: {
-                chronicDiseases: "",
+                chronic_diseases: "",
                 vices: "",
             },
             habitation: {
@@ -523,6 +506,7 @@ export default {
     },
     methods: {
         createCostumer() {
+            let loader = this.$loading.show();
             let body = {
                 costumer: this.costumer,
                 address: this.address,
@@ -534,10 +518,13 @@ export default {
             axios
                 .post("/costumers/insert", body)
                 .then((response) => {
+                    loader.hide();
                     window.location.href = "/";
                 })
                 .catch((error) => {
                     console.log(error);
+                    loader.hide();
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
                 });
         },
         home() {
@@ -551,6 +538,30 @@ export default {
                 occupation: "",
                 salary: "",
             });
+        },
+    },
+    watch: {
+        address: {
+            handler: function (val) {
+                let cep = val.cep.replace(/\D/g, "");
+                if (cep.length == 8) {
+                    let loader = this.$loading.show();
+                    axios
+                        .get(`https://viacep.com.br/ws/${val.cep}/json/`)
+                        .then((response) => {
+                            loader.hide();
+                            this.address.street = response.data.logradouro;
+                            this.address.neighborhood = response.data.bairro;
+                            this.address.city = response.data.localidade;
+                            this.address.state = response.data.uf;
+                        })
+                        .catch((error) => {
+                            loader.hide();
+                            console.log(error);
+                        });
+                }
+            },
+            deep: true,
         },
     },
 };

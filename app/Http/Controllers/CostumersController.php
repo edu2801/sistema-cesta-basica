@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RequestInsertCosutumer;
 use App\Http\Utils\Response;
 use App\Models\AddressModel;
 use App\Models\RedeemsModel;
@@ -59,7 +60,7 @@ class CostumersController extends Controller
         return view('pages.costumers.create');
     }
 
-    public static function insertRecord(Request $request , $id)
+    public static function insertRecord(Request $request, $id)
     {
         $requestData = $request->all();
 
@@ -85,30 +86,41 @@ class CostumersController extends Controller
         }
     }
 
-    public function insert(Request $request)
+    public function insert(RequestInsertCosutumer $request)
     {
         $requestData = $request->all();
 
         DB::beginTransaction();
+        
+        $requestData['costumer']['cpf'] = preg_replace('/[^0-9]/', '', $requestData['costumer']['cpf']);
         $createCostumer = CostumersModel::create($requestData['costumer']);
 
         $requestData['address']['costumer_id'] = $createCostumer['id'];
         $createAddress = AddressModel::create($requestData['address']);
 
-        $createPerson = [];
+        $createPerson = [true];
         foreach ($requestData['relatives'] as $person) {
+            if (empty($person['name']) && empty($person['age'])  && empty($person['relationship'])) {
+                continue;
+            }
             $person['costumer_id'] = $createCostumer['id'];
             $createPerson[] = FamilyGroupModel::create($person);
         }
 
-        $requestData['healthSituation']['costumer_id'] = $createCostumer['id'];
-        $createHealth = HealthSituationModel::create($requestData['healthSituation']);
+        $createHealth = true;
+        if (!empty($requestData['healthSituation']['vices']) || !empty($requestData['healthSituation']['chronic_diseases'])) {
+            $requestData['healthSituation']['costumer_id'] = $createCostumer['id'];
+            $createHealth = HealthSituationModel::create($requestData['healthSituation']);
+        }
 
         $requestData['habitation']['costumer_id'] = $createCostumer['id'];
         $createHabitation = HabitationModel::create($requestData['habitation']);
 
-        $requestData['observations']['costumer_id'] = $createCostumer['id'];
-        $createObservation = ObservationsModel::create($requestData['observations']);
+        $createObservation = true;
+        if (!empty($requestData['observations']['observation'])) {
+            $requestData['observations']['costumer_id'] = $createCostumer['id'];
+            $createObservation = ObservationsModel::create($requestData['observations']);
+        }
 
         if ($createCostumer && $createAddress && $createPerson && $createHealth && $createHabitation && $createObservation) {
             DB::commit();
@@ -117,5 +129,12 @@ class CostumersController extends Controller
             DB::rollBack();
             return Response::error('Erro ao criar cliente!', $createCostumer);
         }
+    }
+
+    public function delete($id)
+    {
+        $costumer = CostumersModel::find($id);
+        $costumer->delete();
+        return Response::success('Cliente deletado com sucesso!', $costumer);
     }
 }

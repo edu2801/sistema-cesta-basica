@@ -17,10 +17,10 @@ class CreateCostumersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->nullable();
-            $table->date('birth_date');
-            $table->string('marital_status');
+            $table->date('birth_date')->nullable();
+            $table->string('marital_status')->nullable();
             $table->string('rg')->nullable();
-            $table->string('cpf')->nullable();
+            $table->string('cpf')->unique()->nullable();
             $table->string('schooling')->nullable();
             $table->string('occupation')->nullable();
             $table->string('salary')->nullable();

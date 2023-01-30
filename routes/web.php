@@ -33,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/create', [CostumersController::class, 'create']);
         // ainda é necessário fazer esse método
         Route::post('/insert', [CostumersController::class, 'insert']);
-
+        Route::delete('/{id}', [CostumersController::class, 'delete']);
     });
 
     Route::get('/logout', [LoginController::class, 'logout']);
