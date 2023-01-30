@@ -25,7 +25,7 @@ class RequestInsertCosutumer extends FormRequest
     {
         return [
             'costumer.name' => 'required',
-            'costumer.cpf' => 'unique:costumers,cpf'
+            'costumer.cpf' => 'unique:costumers,cpf|nullable'
         ];
     }
 
