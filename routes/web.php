@@ -31,9 +31,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/new-record/{id}', [CostumersController::class, 'newRecord']);
         Route::post('/insert-record/{id}', [CostumersController::class, 'insertRecord']);
         Route::get('/create', [CostumersController::class, 'create']);
-        // ainda é necessário fazer esse método
         Route::post('/insert', [CostumersController::class, 'insert']);
         Route::delete('/{id}', [CostumersController::class, 'delete']);
+        Route::put('/{id}', [CostumersController::class, 'update']);
     });
 
     Route::get('/logout', [LoginController::class, 'logout']);

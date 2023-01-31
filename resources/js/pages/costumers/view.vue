@@ -51,15 +51,28 @@
                     <v-app class="mt-3">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">Dados do básicos</div>
+                                <div class="card-header d-flex justify-content-between">
+                                    <div>
+                                        Dados do básicos
+                                    </div>
+                                    <div>
+                                        <button id="costumerEdit" class="text-primary"
+                                            @click="editCostumer">Editar</button>
+                                        <button id="costumerSave" class="btn btn-success" style="display: none;"
+                                            @click="saveCostumer">Salvar</button>
+                                        <button id="costumerCancel" class="btn btn-danger" style="display: none;"
+                                            @click="cancelEditCostumer">Cancelar</button>
+                                    </div>
+                                </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Nome</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="name"
-                                                    placeholder="Nome" type="text" v-model="costumer.name" />
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="name" placeholder="Nome" type="text"
+                                                    v-model="costumer.name" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="mdi mdi-account"></i>
@@ -70,8 +83,9 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Telefone</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="phone"
-                                                    placeholder="Telefone" type="text" v-model="costumer.phone" />
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="phone" placeholder="Telefone" type="text"
+                                                    v-model="costumer.phone" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -90,8 +104,8 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Estado civil</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="marital_status"
-                                                    placeholder="Estado Civil" type="text"
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="marital_status" placeholder="Estado Civil" type="text"
                                                     v-model="costumer.marital_status" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -105,7 +119,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">RG</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="rg"
+                                                <input disabled :class="'input100 form-control costumerGroup'" name="rg"
                                                     placeholder="RG" type="text" v-model="costumer.rg" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -117,8 +131,8 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">CPF</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="cpf"
-                                                    placeholder="CPF" type="text" v-model="costumer.cpf" />
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="cpf" placeholder="CPF" type="text" v-model="costumer.cpf" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -131,8 +145,8 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Escolaridade</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="schooling"
-                                                    placeholder="Escolaridade" type="text"
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="schooling" placeholder="Escolaridade" type="text"
                                                     v-model="costumer.schooling" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -144,8 +158,9 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Profissão</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="occupation"
-                                                    placeholder="Profissão" type="text" v-model="costumer.occupation" />
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="occupation" placeholder="Profissão" type="text"
+                                                    v-model="costumer.occupation" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -158,8 +173,9 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Salário</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="salary"
-                                                    placeholder="Salário" type="number" v-model="costumer.salary" />
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="salary" placeholder="Salário" type="number"
+                                                    v-model="costumer.salary" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="mdi mdi-account"></i>
@@ -170,8 +186,8 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Renda familiar</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="family_income"
-                                                    placeholder="Renda Familiar" type="number"
+                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                    name="family_income" placeholder="Renda Familiar" type="number"
                                                     v-model="costumer.family_income" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -183,27 +199,40 @@
                                 </div>
                             </div>
                             <div class="card mt-5">
-                                <div class="card-header">Endereço</div>
+                                <div class="card-header d-flex justify-content-between">
+                                    <div>
+                                        Endereço
+                                    </div>
+                                    <div>
+                                        <button id="addressEdit" class="text-primary"
+                                            @click="editAddress">Editar</button>
+                                        <button id="addressSave" class="btn btn-success" style="display: none;"
+                                            @click="saveAddress">Salvar</button>
+                                        <button id="addressCancel" class="btn btn-danger" style="display: none;"
+                                            @click="cancelEditAddress">Cancelar</button>
+                                    </div>
+                                </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-6 mb-3">
-                                            <label class="form-label">Rua</label>
+                                            <label class="form-label">CEP</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="street"
-                                                    placeholder="Rua" type="text" v-model="address.street" />
+                                                <input disabled :class="'input100 form-control addressGroup'" name="cep"
+                                                    placeholder="CEP" type="text" v-model="address.cep" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
-                                                    <i aria-hidden="true" class="mdi mdi-account"></i>
+                                                    <i aria-hidden="true" class="zmdi zmdi-email"></i>
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div class="col-12 col-md-6 mb-3">
-                                            <label class="form-label">Número</label>
+                                            <label class="form-label">Rua</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="number"
-                                                    placeholder="Número" type="string" v-model="address.number" />
+                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                    name="street" placeholder="Rua" type="text"
+                                                    v-model="address.street" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="mdi mdi-account"></i>
@@ -214,10 +243,39 @@
 
                                     <div class="row">
                                         <div class="col-12 col-md-6 mb-3">
+                                            <label class="form-label">Número</label>
+                                            <div class="wrap-input100">
+                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                    name="number" placeholder="Número" type="string"
+                                                    v-model="address.number" />
+                                                <span class="focus-input100"></span>
+                                                <span class="symbol-input100">
+                                                    <i aria-hidden="true" class="mdi mdi-account"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Bairro</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="neighborhood"
-                                                    placeholder="Bairro" type="text" v-model="address.neighborhood" />
+                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                    name="neighborhood" placeholder="Bairro" type="text"
+                                                    v-model="address.neighborhood" />
+                                                <span class="focus-input100"></span>
+                                                <span class="symbol-input100">
+                                                    <i aria-hidden="true" class="zmdi zmdi-email"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="form-label">Cidade</label>
+                                            <div class="wrap-input100">
+                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                    name="city" placeholder="Cidade" type="text"
+                                                    v-model="address.city" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -226,13 +284,14 @@
                                         </div>
 
                                         <div class="col-12 col-md-6 mb-3">
-                                            <label class="form-label">Cidade</label>
+                                            <label class="form-label">Estado</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="city"
-                                                    placeholder="Cidade" type="text" v-model="address.city" />
+                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                    name="state" placeholder="Estado" type="text"
+                                                    v-model="address.state" maxlength="2" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
-                                                    <i aria-hidden="true" class="zmdi zmdi-email"></i>
+                                                    <i aria-hidden="true" class="mdi mdi-account"></i>
                                                 </span>
                                             </div>
                                         </div>
@@ -255,14 +314,27 @@
                             </div>
 
                             <div class="card mt-5">
-                                <div class="card-header">Grupo familiar</div>
+                                <div class="card-header d-flex justify-content-between">
+                                    <div>
+                                        Grupo familiar
+                                    </div>
+                                    <div>
+                                        <button id="relativesEdit" class="text-primary"
+                                            @click="editRelatives">Editar</button>
+                                        <button id="relativesSave" class="btn btn-success" style="display: none;"
+                                            @click="saveRelatives">Salvar</button>
+                                        <button id="relativesCancel" class="btn btn-danger" style="display: none;"
+                                            @click="cancelEditRelatives">Cancelar</button>
+                                    </div>
+                                </div>
 
                                 <div class="card-body">
                                     <div v-for="relative in relatives" class="row">
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Nome</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="relative_name"
+                                                <input :disabled="viewMode"
+                                                    :class="'input100 form-control relativesGroup'" name="relative_name"
                                                     placeholder="Nome" type="text" v-model="relative.name" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -274,7 +346,8 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Parentesco</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '"
+                                                <input :disabled="viewMode"
+                                                    :class="'input100 form-control relativesGroup'"
                                                     name="relative_relationship" placeholder="Parentesco" type="text"
                                                     v-model="relative.relationship" />
                                                 <span class="focus-input100"></span>
@@ -286,7 +359,8 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Idade</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="relative_age"
+                                                <input :disabled="viewMode"
+                                                    :class="'input100 form-control relativesGroup'" name="relative_age"
                                                     placeholder="Idade" type="text" v-model="relative.age" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -297,7 +371,8 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Profissão</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="occupation"
+                                                <input :disabled="viewMode"
+                                                    :class="'input100 form-control relativesGroup'" name="occupation"
                                                     placeholder="Profissão" type="text" v-model="relative.occupation" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -308,13 +383,20 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Salário</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control '" name="relative_salary"
-                                                    placeholder="Salário" type="text" v-model="relative.salary" />
+                                                <input :disabled="viewMode"
+                                                    :class="'input100 form-control relativesGroup'"
+                                                    name="relative_salary" placeholder="Salário" type="text"
+                                                    v-model="relative.salary" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
                                                 </span>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div id="relativesAdd" class="row" style="display: none;">
+                                        <div class="col-12 text-center">
+                                            <a class="text-primary" @click="addRelative">Adicionar mais parentes</a>
                                         </div>
                                     </div>
                                 </div>
@@ -468,6 +550,7 @@ export default {
     },
     data() {
         return {
+            personsData: {},
             costumer: {},
             address: {},
             relatives: {},
@@ -475,6 +558,7 @@ export default {
             habitation: {},
             observations: {},
             reedeems: [],
+            viewMode: true,
         };
     },
     methods: {
@@ -499,20 +583,158 @@ export default {
                     console.log(error);
                 });
         },
+        addRelative() {
+            this.relatives.push({
+                name: "",
+                relationship: "",
+                age: "",
+                occupation: "",
+                salary: "",
+                costumer_id: this.costumer.id
+            });
+        },
+        editCostumer() {
+            $("#costumerEdit").hide();
+            $("#costumerSave").show();
+            $("#costumerCancel").show();
+            $('.costumerGroup').removeAttr('disabled');
+        },
+        saveCostumer() {
+            axios
+                .put("/costumers/" + this.costumer.id, {
+                    costumer: this.costumer
+                })
+                .then((response) => {
+                    $("#costumerEdit").show();
+                    $("#costumerSave").hide();
+                    $("#costumerCancel").hide();
+                    $('.costumerGroup').attr('disabled', 'disabled');
+                    this.personsData.costumer = { ...this.costumer };
+                    this.$toast.success("Usuário atualizado com sucesso!");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+                    this.cancelEditCostumer();
+                });
+        },
+        cancelEditCostumer() {
+            $("#costumerEdit").show();
+            $("#costumerSave").hide();
+            $("#costumerCancel").hide();
+            $('.costumerGroup').attr('disabled', 'disabled');
+            console.log(this.personsData.costumer)
+            this.costumer = { ...this.personsData.costumer };
+        },
+        editAddress() {
+            $("#addressEdit").hide();
+            $("#addressSave").show();
+            $("#addressCancel").show();
+            $('.addressGroup').removeAttr('disabled');
+        },
+        saveAddress() {
+            axios
+                .put("/costumers/" + this.costumer.id, {
+                    address: this.address
+                })
+                .then((response) => {
+                    $("#addressEdit").show();
+                    $("#addressSave").hide();
+                    $("#addressCancel").hide();
+                    $('.addressGroup').attr('disabled', 'disabled');
+                    this.personsData.address = { ...this.address };
+                    this.$toast.success("Endereço atualizado com sucesso!");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+                    this.cancelEditAddress();
+                });
+        },
+        cancelEditAddress() {
+            $("#addressEdit").show();
+            $("#addressSave").hide();
+            $("#addressCancel").hide();
+            $('.addressGroup').attr('disabled', 'disabled');
+            this.address = { ...this.personsData.address };
+            this.viewMode = true;
+        },
+        editRelatives() {
+            $("#relativesEdit").hide();
+            $("#relativesSave").show();
+            $("#relativesCancel").show();
+            $('#relativesAdd').show();
+            $('.relativesGroup').removeAttr('disabled');
+            this.viewMode = false;
+        },
+        saveRelatives() {
+            axios
+                .put("/costumers/" + this.costumer.id, {
+                    relatives: this.relatives
+                })
+                .then((response) => {
+                    $("#relativesEdit").show();
+                    $("#relativesSave").hide();
+                    $("#relativesCancel").hide();
+                    $('#relativesAdd').hide();
+                    this.viewMode = true;
+                    this.personsData.familyGroup = [...this.relatives];
+                    this.$toast.success("Família atualizada com sucesso!");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+                    this.cancelEditRelatives();
+                });
+        },
+        cancelEditRelatives() {
+            $("#relativesEdit").show();
+            $("#relativesSave").hide();
+            $("#relativesCancel").hide();
+            $('#relativesAdd').hide();
+            $('.relativesGroup').attr('disabled', 'disabled');
+            this.relatives = [...this.personsData.familyGroup];
+        },
     },
     mounted() {
-        let personsData = JSON.parse(this.data);
-        this.costumer = personsData.costumer;
-        this.address = personsData.address;
-        this.relatives = personsData.familyGroup;
-        this.healthSituation = personsData.healthSituation;
-        this.habitation = personsData.habitation;
-        this.observations = personsData.observations;
-        this.reedeems = personsData.reedeems;
+        this.personsData = JSON.parse(this.data);
+        let person = JSON.parse(this.data);
+        this.costumer = person.costumer;
+        this.address = person.address;
+        this.relatives = person.familyGroup;
+        this.healthSituation = person.healthSituation;
+        this.habitation = person.habitation;
+        this.observations = person.observations;
+        this.reedeems = person.reedeems;
+
 
         this.costumer.birth_date = this.costumer.birth_date.split('-').reverse().join('/') || null;
 
-        console.log(personsData)
+        setTimeout(() => {
+            $('.relativesGroup').attr('disabled', 'disabled');
+        }, 1000);
+        console.log(this.personsData)
     },
+    watch: {
+        address: {
+            handler: function (val, oldVal) {
+                let cep = val.cep.replace(/\D/g, '');
+                if (cep.length == 8) {
+                    axios
+                        .get("https://viacep.com.br/ws/" + cep + "/json/")
+                        .then((response) => {
+                            this.address.street = response.data.logradouro;
+                            this.address.neighborhood = response.data.bairro;
+                            this.address.city = response.data.localidade;
+                            this.address.state = response.data.uf;
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                }
+            },
+            deep: true
+        },
+    }
 };
 </script>

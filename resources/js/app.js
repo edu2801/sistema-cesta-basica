@@ -9,6 +9,8 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import pt from 'vuetify/lib/locale/pt'
+import jQuery from 'jquery';
+window.$ = jQuery;
 
 Vue.use(Vuetify);
 Vue.use(VueToast);
