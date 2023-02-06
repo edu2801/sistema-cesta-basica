@@ -37,5 +37,8 @@ const app = new Vue({
             locales: { pt },
             current: 'pt',
         },
+        icons: {
+            iconfont: 'mdiSvg',
+          },
     })
 });

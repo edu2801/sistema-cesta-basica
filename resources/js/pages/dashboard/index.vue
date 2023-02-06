@@ -14,7 +14,7 @@
         </div>
 
         <v-app class="container">
-            <v-data-table :headers="columns" :items="dataTable" :search="search">
+            <v-data-table class="elevation-1" :headers="columns" :items="dataTable" :search="search">
                 <template v-slot:top>
                     <v-text-field v-model="search" label="Pesquisar" class="mx-4"></v-text-field>
                 </template>
