@@ -403,34 +403,44 @@
                             </div>
 
                             <div class="card mt-5">
-                                <div class="card-header">
-                                    Benefícios de transferência de renda
+                                <div class="card-header d-flex justify-content-between">
+                                    <div>
+                                        Benefícios de transferência de renda
+                                    </div>
+                                    <div>
+                                        <button id="benefitsEdit" class="text-primary"
+                                            @click="editBenefits">Editar</button>
+                                        <button id="benefitsSave" class="btn btn-success" style="display: none;"
+                                            @click="saveBenefits">Salvar</button>
+                                        <button id="benefitsCancel" class="btn btn-danger" style="display: none;"
+                                            @click="cancelEditBenefits">Cancelar</button>
+                                    </div>
                                 </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-2">
                                             <input disabled type="checkbox" id="checkCadastroUnico"
-                                                v-model="costumer.cadastro_unico" />
+                                                class="benefitsGroup" v-model="costumer.cadastro_unico" />
                                             <label for="checkCadastroUnico">Cadastro Único</label>
                                         </div>
                                         <div class="col-12 col-md-2">
-                                            <input disabled type="checkbox" id="checkBolsaFamilia"
+                                            <input disabled type="checkbox" id="checkBolsaFamilia" class="benefitsGroup"
                                                 v-model="costumer.bolsa_familia" />
                                             <label for="checkBolsaFamilia">Bolsa Família</label>
                                         </div>
                                         <div class="col-12 col-md-2">
                                             <input disabled type="checkbox" id="checkPrestacaoContinuada"
-                                                v-model="costumer.prestacao_continuada" />
+                                                class="benefitsGroup" v-model="costumer.prestacao_continuada" />
                                             <label for="checkPrestacaoContinuada">Prestação Continuada</label>
                                         </div>
                                         <div class="col-12 col-md-2">
-                                            <input disabled type="checkbox" id="checkRendaCidada"
+                                            <input disabled type="checkbox" id="checkRendaCidada" class="benefitsGroup"
                                                 v-model="costumer.renda_cidada" />
                                             <label for="checkRendaCidada">Renda Cidadã</label>
                                         </div>
                                         <div class="col-12 col-md-2">
-                                            <input disabled type="checkbox" id="checkCestaBasica"
+                                            <input disabled type="checkbox" id="checkCestaBasica" class="benefitsGroup"
                                                 v-model="costumer.cesta_basica" />
                                             <label for="checkCestaBasica">Cesta Básica</label>
                                         </div>
@@ -439,16 +449,27 @@
                             </div>
 
                             <div class="card mt-5">
-                                <div class="card-header">Situação de saúde</div>
+                                <div class="card-header d-flex justify-content-between">
+                                    <div>
+                                        Situação de saúde
+                                    </div>
+                                    <div>
+                                        <button id="healthSituationEdit" class="text-primary"
+                                            @click="editHealthSituation">Editar</button>
+                                        <button id="healthSituationSave" class="btn btn-success" style="display: none;"
+                                            @click="saveHealthSituation">Salvar</button>
+                                        <button id="healthSituationCancel" class="btn btn-danger" style="display: none;"
+                                            @click="cancelEditHealthSituation">Cancelar</button>
+                                    </div>
+                                </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Doenças crônicas</label>
                                             <div class="wrap-input100">
-                                                <input v-if="!!healthSituation" disabled
-                                                    :class="'input100 form-control '" name="chronicDiseases"
-                                                    placeholder="Doenças Crônicas" type="text"
+                                                <input disabled :class="'input100 form-control healthSituationGroup'"
+                                                    name="chronic_diseases" placeholder="Doenças Crônicas" type="text"
                                                     v-model="healthSituation.chronic_diseases" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -460,9 +481,9 @@
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Vícios</label>
                                             <div class="wrap-input100">
-                                                <input v-if="!!healthSituation" disabled
-                                                    :class="'input100 form-control '" name="vices" placeholder="Vícios"
-                                                    type="text" v-model="healthSituation.vices" />
+                                                <input disabled :class="'input100 form-control healthSituationGroup'"
+                                                    name="vices" placeholder="Vícios" type="text"
+                                                    v-model="healthSituation.vices" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -474,37 +495,49 @@
                             </div>
 
                             <div class="card mt-5">
-                                <div class="card-header">Habitação</div>
+                                <div class="card-header d-flex justify-content-between">
+                                    <div>
+                                        Habitação
+                                    </div>
+                                    <div>
+                                        <button id="habitationEdit" class="text-primary"
+                                            @click="editHabitation">Editar</button>
+                                        <button id="habitationSave" class="btn btn-success" style="display: none;"
+                                            @click="saveHabitation">Salvar</button>
+                                        <button id="habitationCancel" class="btn btn-danger" style="display: none;"
+                                            @click="cancelEditHabitation">Cancelar</button>
+                                    </div>
+                                </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-2">
                                             <input disabled type="radio" id="radioRented" value="rented"
-                                                v-model="habitation.ownership" />
+                                                class="habitationGroup" v-model="habitation.ownership" />
                                             <label for="radioRented">Alugada</label>
                                         </div>
 
                                         <div class="col-12 col-md-2">
                                             <input disabled type="radio" id="radioOwned" value="owned"
-                                                v-model="habitation.ownership" />
+                                                class="habitationGroup" v-model="habitation.ownership" />
                                             <label for="radioOwned">Própria</label>
                                         </div>
                                         <div class="col-12 col-md-2">
                                             <input disabled type="radio" id="radioGived" value="gived"
-                                                v-model="habitation.ownership" />
+                                                class="habitationGroup" v-model="habitation.ownership" />
                                             <label for="radioGived">Cedida</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12 col md-6">
                                             <label class="form-label" for="habitationCondition">Condição</label>
-                                            <input disabled :class="'input100 form-control '" type="text"
+                                            <input disabled :class="'input100 form-control habitationGroup'" type="text"
                                                 id="habitationCondition" name="habitationCondition"
                                                 placeholder="Condição" v-model="habitation.condition" />
                                         </div>
-                                        <div v-if="habitation.ownership === 'rented'" class="col-12 col-md-6">
+                                        <div :style="habitation.ownership === 'rented' ? '' : 'display: none;' " class="col-12 col-md-6">
                                             <label class="form-label">Valor do aluguel</label>
-                                            <input disabled :class="'input100 form-control '" name="value"
+                                            <input disabled :class="'input100 form-control habitationGroup'" name="value"
                                                 placeholder="Valor do aluguel" type="number"
                                                 v-model="habitation.value" />
                                         </div>
@@ -513,10 +546,22 @@
                             </div>
 
                             <div class="card mt-5">
-                                <div class="card-header">Observações adicionais</div>
+                                <div class="card-header d-flex justify-content-between">
+                                    <div>
+                                        Observações Adicionais
+                                    </div>
+                                    <div>
+                                        <button id="observationEdit" class="text-primary"
+                                            @click="editObservation">Editar</button>
+                                        <button id="observationSave" class="btn btn-success" style="display: none;"
+                                            @click="saveObservation">Salvar</button>
+                                        <button id="observationCancel" class="btn btn-danger" style="display: none;"
+                                            @click="cancelEditObservation">Cancelar</button>
+                                    </div>
+                                </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <textarea v-if="!!observations" disabled :class="'form-control'"
+                                        <textarea disabled :class="'form-control observationGroup'"
                                             placeholder="Digite as observações aqui..." rows="4"
                                             v-model="observations.observation"></textarea>
                                     </div>
@@ -695,6 +740,134 @@ export default {
             $('.relativesGroup').attr('disabled', 'disabled');
             this.relatives = [...this.personsData.familyGroup];
         },
+        editObservation() {
+            $("#observationEdit").hide();
+            $("#observationSave").show();
+            $("#observationCancel").show();
+            $('.observationGroup').removeAttr('disabled');
+        },
+        saveObservation() {
+            axios
+                .put("/costumers/" + this.costumer.id, {
+                    observations: this.observations
+                })
+                .then((response) => {
+                    $("#observationEdit").show();
+                    $("#observationSave").hide();
+                    $("#observationCancel").hide();
+                    $('.observationGroup').attr('disabled', 'disabled');
+                    this.personsData.observations = { ...this.observations };
+                    this.$toast.success("Observações atualizadas com sucesso!");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+                    this.cancelEditObservations();
+                });
+        },
+        cancelEditObservation() {
+            $("#observationEdit").show();
+            $("#observationSave").hide();
+            $("#observationCancel").hide();
+            $('.observationGroup').attr('disabled', 'disabled');
+            this.observations = { ...this.personsData.observations };
+        },
+        editHealthSituation() {
+            $("#healthSituationEdit").hide();
+            $("#healthSituationSave").show();
+            $("#healthSituationCancel").show();
+            $('.healthSituationGroup').removeAttr('disabled');
+        },
+        saveHealthSituation() {
+            axios
+                .put("/costumers/" + this.costumer.id, {
+                    healthSituation: this.healthSituation
+                })
+                .then((response) => {
+                    $("#healthSituationEdit").show();
+                    $("#healthSituationSave").hide();
+                    $("#healthSituationCancel").hide();
+                    $('.healthSituationGroup').attr('disabled', 'disabled');
+                    this.personsData.healthSituation = { ...this.healthSituation };
+                    this.$toast.success("Situação de saúde atualizada com sucesso!");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+                    this.cancelEditHealthSituation();
+                });
+        },
+        cancelEditHealthSituation() {
+            $("#healthSituationEdit").show();
+            $("#healthSituationSave").hide();
+            $("#healthSituationCancel").hide();
+            $('.healthSituationGroup').attr('disabled', 'disabled');
+            this.healthSituation = { ...this.personsData.healthSituation };
+        },
+        editBenefits() {
+            $("#benefitsEdit").hide();
+            $("#benefitsSave").show();
+            $("#benefitsCancel").show();
+            $('.benefitsGroup').removeAttr('disabled');
+        },
+        saveBenefits() {
+            axios
+                .put("/costumers/" + this.costumer.id, {
+                    costumer: this.costumer
+                })
+                .then((response) => {
+                    $("#benefitsEdit").show();
+                    $("#benefitsSave").hide();
+                    $("#benefitsCancel").hide();
+                    $('.benefitsGroup').attr('disabled', 'disabled');
+                    this.personsData.costumer = { ...this.costumer };
+                    this.$toast.success("Benefícios atualizados com sucesso!");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+                    this.cancelEditBenefits();
+                });
+        },
+        cancelEditBenefits() {
+            $("#benefitsEdit").show();
+            $("#benefitsSave").hide();
+            $("#benefitsCancel").hide();
+            $('.benefitsGroup').attr('disabled', 'disabled');
+            this.costumer = { ...this.personsData.costumer };
+        },
+        editHabitation() {
+            $("#habitationEdit").hide();
+            $("#habitationSave").show();
+            $("#habitationCancel").show();
+            $('.habitationGroup').removeAttr('disabled');
+        },
+        saveHabitation() {
+            axios
+                .put("/costumers/" + this.costumer.id, {
+                    habitation: this.habitation
+                })
+                .then((response) => {
+                    $("#habitationEdit").show();
+                    $("#habitationSave").hide();
+                    $("#habitationCancel").hide();
+                    $('.habitationGroup').attr('disabled', 'disabled');
+                    this.personsData.habitation = { ...this.habitation };
+                    this.$toast.success("Habitação atualizada com sucesso!");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+                    this.cancelEditHabitation();
+                });
+        },
+        cancelEditHabitation() {
+            $("#habitationEdit").show();
+            $("#habitationSave").hide();
+            $("#habitationCancel").hide();
+            $('.habitationGroup').attr('disabled', 'disabled');
+            this.habitation = { ...this.personsData.habitation };
+        },
     },
     mounted() {
         this.personsData = JSON.parse(this.data);
@@ -702,9 +875,9 @@ export default {
         this.costumer = person.costumer;
         this.address = person.address;
         this.relatives = person.familyGroup;
-        this.healthSituation = person.healthSituation;
+        this.healthSituation = person.healthSituation || { chronic_diseases: "", vices: "", costumer_id: person.costumer.id };
         this.habitation = person.habitation;
-        this.observations = person.observations;
+        this.observations = person.observations || { observation: "", costumer_id: person.costumer.id };
         this.reedeems = person.reedeems;
 
 

@@ -193,7 +193,12 @@ class CostumersController extends Controller
             unset($requestData['healthSituation']['created_at']);
             unset($requestData['healthSituation']['updated_at']);
             if (!empty($requestData['healthSituation']['vices']) || !empty($requestData['healthSituation']['chronic_diseases'])) {
-                $updateHealth = HealthSituationModel::where('costumer_id', $requestData['healthSituation']['costumer_id'])->update($requestData['healthSituation']);
+                $updateHealth = HealthSituationModel::where('costumer_id', $requestData['healthSituation']['costumer_id'])->first();
+                if (empty($updateHealth)) {
+                    $updateHealth = HealthSituationModel::create($requestData['healthSituation']);
+                } else {
+                    $updateHealth = HealthSituationModel::where('costumer_id', $requestData['healthSituation']['costumer_id'])->update($requestData['healthSituation']);
+                }
             }
         }
 
@@ -208,7 +213,12 @@ class CostumersController extends Controller
         if (!empty($requestData['observations'])) {
             unset($requestData['observations']['created_at']);
             unset($requestData['observations']['updated_at']);
-            $updateObservation = ObservationsModel::where('costumer_id', $requestData['observations']['costumer_id'])->update($requestData['observations']);
+            $updateObservation = ObservationsModel::where('costumer_id', $requestData['observations']['costumer_id'])->first();
+            if (empty($updateObservation)) {
+                $updateObservation = ObservationsModel::create($requestData['observations']);
+            } else {
+                $updateObservation = ObservationsModel::where('costumer_id', $requestData['observations']['costumer_id'])->update($requestData['observations']);
+            }
         }
 
         if ($updateCostumer && $updateAddress && $updatePerson && $updateHealth && $updateHabitation && $updateObservation) {

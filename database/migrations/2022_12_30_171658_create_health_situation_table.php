@@ -16,7 +16,7 @@ class CreateHealthSituationTable extends Migration
         Schema::create('health_situation', function (Blueprint $table) {
             $table->id();
             $table->foreignId('costumer_id')->constrained('costumers')->onDelete('cascade');
-            $table->longText('chronic diseases')->nullable();
+            $table->longText('chronic_diseases')->nullable();
             $table->longText('vices')->nullable();
             $table->timestamps();
         });

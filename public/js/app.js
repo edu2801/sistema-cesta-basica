@@ -5796,6 +5796,126 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       $('#relativesAdd').hide();
       $('.relativesGroup').attr('disabled', 'disabled');
       this.relatives = _toConsumableArray(this.personsData.familyGroup);
+    },
+    editObservation: function editObservation() {
+      $("#observationEdit").hide();
+      $("#observationSave").show();
+      $("#observationCancel").show();
+      $('.observationGroup').removeAttr('disabled');
+    },
+    saveObservation: function saveObservation() {
+      var _this5 = this;
+      axios.put("/costumers/" + this.costumer.id, {
+        observations: this.observations
+      }).then(function (response) {
+        $("#observationEdit").show();
+        $("#observationSave").hide();
+        $("#observationCancel").hide();
+        $('.observationGroup').attr('disabled', 'disabled');
+        _this5.personsData.observations = _objectSpread({}, _this5.observations);
+        _this5.$toast.success("Observações atualizadas com sucesso!");
+      })["catch"](function (error) {
+        console.log(error);
+        _this5.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+        _this5.cancelEditObservations();
+      });
+    },
+    cancelEditObservation: function cancelEditObservation() {
+      $("#observationEdit").show();
+      $("#observationSave").hide();
+      $("#observationCancel").hide();
+      $('.observationGroup').attr('disabled', 'disabled');
+      this.observations = _objectSpread({}, this.personsData.observations);
+    },
+    editHealthSituation: function editHealthSituation() {
+      $("#healthSituationEdit").hide();
+      $("#healthSituationSave").show();
+      $("#healthSituationCancel").show();
+      $('.healthSituationGroup').removeAttr('disabled');
+    },
+    saveHealthSituation: function saveHealthSituation() {
+      var _this6 = this;
+      axios.put("/costumers/" + this.costumer.id, {
+        healthSituation: this.healthSituation
+      }).then(function (response) {
+        $("#healthSituationEdit").show();
+        $("#healthSituationSave").hide();
+        $("#healthSituationCancel").hide();
+        $('.healthSituationGroup').attr('disabled', 'disabled');
+        _this6.personsData.healthSituation = _objectSpread({}, _this6.healthSituation);
+        _this6.$toast.success("Situação de saúde atualizada com sucesso!");
+      })["catch"](function (error) {
+        console.log(error);
+        _this6.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+        _this6.cancelEditHealthSituation();
+      });
+    },
+    cancelEditHealthSituation: function cancelEditHealthSituation() {
+      $("#healthSituationEdit").show();
+      $("#healthSituationSave").hide();
+      $("#healthSituationCancel").hide();
+      $('.healthSituationGroup').attr('disabled', 'disabled');
+      this.healthSituation = _objectSpread({}, this.personsData.healthSituation);
+    },
+    editBenefits: function editBenefits() {
+      $("#benefitsEdit").hide();
+      $("#benefitsSave").show();
+      $("#benefitsCancel").show();
+      $('.benefitsGroup').removeAttr('disabled');
+    },
+    saveBenefits: function saveBenefits() {
+      var _this7 = this;
+      axios.put("/costumers/" + this.costumer.id, {
+        costumer: this.costumer
+      }).then(function (response) {
+        $("#benefitsEdit").show();
+        $("#benefitsSave").hide();
+        $("#benefitsCancel").hide();
+        $('.benefitsGroup').attr('disabled', 'disabled');
+        _this7.personsData.costumer = _objectSpread({}, _this7.costumer);
+        _this7.$toast.success("Benefícios atualizados com sucesso!");
+      })["catch"](function (error) {
+        console.log(error);
+        _this7.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+        _this7.cancelEditBenefits();
+      });
+    },
+    cancelEditBenefits: function cancelEditBenefits() {
+      $("#benefitsEdit").show();
+      $("#benefitsSave").hide();
+      $("#benefitsCancel").hide();
+      $('.benefitsGroup').attr('disabled', 'disabled');
+      this.costumer = _objectSpread({}, this.personsData.costumer);
+    },
+    editHabitation: function editHabitation() {
+      $("#habitationEdit").hide();
+      $("#habitationSave").show();
+      $("#habitationCancel").show();
+      $('.habitationGroup').removeAttr('disabled');
+    },
+    saveHabitation: function saveHabitation() {
+      var _this8 = this;
+      axios.put("/costumers/" + this.costumer.id, {
+        habitation: this.habitation
+      }).then(function (response) {
+        $("#habitationEdit").show();
+        $("#habitationSave").hide();
+        $("#habitationCancel").hide();
+        $('.habitationGroup').attr('disabled', 'disabled');
+        _this8.personsData.habitation = _objectSpread({}, _this8.habitation);
+        _this8.$toast.success("Habitação atualizada com sucesso!");
+      })["catch"](function (error) {
+        console.log(error);
+        _this8.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
+        _this8.cancelEditHabitation();
+      });
+    },
+    cancelEditHabitation: function cancelEditHabitation() {
+      $("#habitationEdit").show();
+      $("#habitationSave").hide();
+      $("#habitationCancel").hide();
+      $('.habitationGroup').attr('disabled', 'disabled');
+      this.habitation = _objectSpread({}, this.personsData.habitation);
     }
   },
   mounted: function mounted() {
@@ -5804,9 +5924,16 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.costumer = person.costumer;
     this.address = person.address;
     this.relatives = person.familyGroup;
-    this.healthSituation = person.healthSituation;
+    this.healthSituation = person.healthSituation || {
+      chronic_diseases: "",
+      vices: "",
+      costumer_id: person.costumer.id
+    };
     this.habitation = person.habitation;
-    this.observations = person.observations;
+    this.observations = person.observations || {
+      observation: "",
+      costumer_id: person.costumer.id
+    };
     this.reedeems = person.reedeems;
     this.costumer.birth_date = this.costumer.birth_date.split('-').reverse().join('/') || null;
     setTimeout(function () {
@@ -5817,14 +5944,14 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   watch: {
     address: {
       handler: function handler(val, oldVal) {
-        var _this5 = this;
+        var _this9 = this;
         var cep = val.cep.replace(/\D/g, '');
         if (cep.length == 8) {
           axios.get("https://viacep.com.br/ws/" + cep + "/json/").then(function (response) {
-            _this5.address.street = response.data.logradouro;
-            _this5.address.neighborhood = response.data.bairro;
-            _this5.address.city = response.data.localidade;
-            _this5.address.state = response.data.uf;
+            _this9.address.street = response.data.logradouro;
+            _this9.address.neighborhood = response.data.bairro;
+            _this9.address.city = response.data.localidade;
+            _this9.address.state = response.data.uf;
           })["catch"](function (error) {
             console.log(error);
           });
@@ -8813,8 +8940,38 @@ var render = function render() {
   }, [_vm._v("Adicionar mais parentes")])])])], 2)]), _vm._v(" "), _c("div", {
     staticClass: "card mt-5"
   }, [_c("div", {
-    staticClass: "card-header"
-  }, [_vm._v("\n                                Benefícios de transferência de renda\n                            ")]), _vm._v(" "), _c("div", {
+    staticClass: "card-header d-flex justify-content-between"
+  }, [_c("div", [_vm._v("\n                                    Benefícios de transferência de renda\n                                ")]), _vm._v(" "), _c("div", [_c("button", {
+    staticClass: "text-primary",
+    attrs: {
+      id: "benefitsEdit"
+    },
+    on: {
+      click: _vm.editBenefits
+    }
+  }, [_vm._v("Editar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-success",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "benefitsSave"
+    },
+    on: {
+      click: _vm.saveBenefits
+    }
+  }, [_vm._v("Salvar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-danger",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "benefitsCancel"
+    },
+    on: {
+      click: _vm.cancelEditBenefits
+    }
+  }, [_vm._v("Cancelar")])])]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "row"
@@ -8827,6 +8984,7 @@ var render = function render() {
       value: _vm.costumer.cadastro_unico,
       expression: "costumer.cadastro_unico"
     }],
+    staticClass: "benefitsGroup",
     attrs: {
       disabled: "",
       type: "checkbox",
@@ -8866,6 +9024,7 @@ var render = function render() {
       value: _vm.costumer.bolsa_familia,
       expression: "costumer.bolsa_familia"
     }],
+    staticClass: "benefitsGroup",
     attrs: {
       disabled: "",
       type: "checkbox",
@@ -8905,6 +9064,7 @@ var render = function render() {
       value: _vm.costumer.prestacao_continuada,
       expression: "costumer.prestacao_continuada"
     }],
+    staticClass: "benefitsGroup",
     attrs: {
       disabled: "",
       type: "checkbox",
@@ -8944,6 +9104,7 @@ var render = function render() {
       value: _vm.costumer.renda_cidada,
       expression: "costumer.renda_cidada"
     }],
+    staticClass: "benefitsGroup",
     attrs: {
       disabled: "",
       type: "checkbox",
@@ -8983,6 +9144,7 @@ var render = function render() {
       value: _vm.costumer.cesta_basica,
       expression: "costumer.cesta_basica"
     }],
+    staticClass: "benefitsGroup",
     attrs: {
       disabled: "",
       type: "checkbox",
@@ -9016,8 +9178,38 @@ var render = function render() {
   }, [_vm._v("Cesta Básica")])])])])]), _vm._v(" "), _c("div", {
     staticClass: "card mt-5"
   }, [_c("div", {
-    staticClass: "card-header"
-  }, [_vm._v("Situação de saúde")]), _vm._v(" "), _c("div", {
+    staticClass: "card-header d-flex justify-content-between"
+  }, [_c("div", [_vm._v("\n                                    Situação de saúde\n                                ")]), _vm._v(" "), _c("div", [_c("button", {
+    staticClass: "text-primary",
+    attrs: {
+      id: "healthSituationEdit"
+    },
+    on: {
+      click: _vm.editHealthSituation
+    }
+  }, [_vm._v("Editar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-success",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "healthSituationSave"
+    },
+    on: {
+      click: _vm.saveHealthSituation
+    }
+  }, [_vm._v("Salvar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-danger",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "healthSituationCancel"
+    },
+    on: {
+      click: _vm.cancelEditHealthSituation
+    }
+  }, [_vm._v("Cancelar")])])]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "row"
@@ -9027,17 +9219,17 @@ var render = function render() {
     staticClass: "form-label"
   }, [_vm._v("Doenças crônicas")]), _vm._v(" "), _c("div", {
     staticClass: "wrap-input100"
-  }, [!!_vm.healthSituation ? _c("input", {
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.healthSituation.chronic_diseases,
       expression: "healthSituation.chronic_diseases"
     }],
-    "class": "input100 form-control ",
+    "class": "input100 form-control healthSituationGroup",
     attrs: {
       disabled: "",
-      name: "chronicDiseases",
+      name: "chronic_diseases",
       placeholder: "Doenças Crônicas",
       type: "text"
     },
@@ -9050,7 +9242,7 @@ var render = function render() {
         _vm.$set(_vm.healthSituation, "chronic_diseases", $event.target.value);
       }
     }
-  }) : _vm._e(), _vm._v(" "), _c("span", {
+  }), _vm._v(" "), _c("span", {
     staticClass: "focus-input100"
   }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
@@ -9065,14 +9257,14 @@ var render = function render() {
     staticClass: "form-label"
   }, [_vm._v("Vícios")]), _vm._v(" "), _c("div", {
     staticClass: "wrap-input100"
-  }, [!!_vm.healthSituation ? _c("input", {
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.healthSituation.vices,
       expression: "healthSituation.vices"
     }],
-    "class": "input100 form-control ",
+    "class": "input100 form-control healthSituationGroup",
     attrs: {
       disabled: "",
       name: "vices",
@@ -9088,7 +9280,7 @@ var render = function render() {
         _vm.$set(_vm.healthSituation, "vices", $event.target.value);
       }
     }
-  }) : _vm._e(), _vm._v(" "), _c("span", {
+  }), _vm._v(" "), _c("span", {
     staticClass: "focus-input100"
   }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
@@ -9100,8 +9292,38 @@ var render = function render() {
   })])])])])])]), _vm._v(" "), _c("div", {
     staticClass: "card mt-5"
   }, [_c("div", {
-    staticClass: "card-header"
-  }, [_vm._v("Habitação")]), _vm._v(" "), _c("div", {
+    staticClass: "card-header d-flex justify-content-between"
+  }, [_c("div", [_vm._v("\n                                    Habitação\n                                ")]), _vm._v(" "), _c("div", [_c("button", {
+    staticClass: "text-primary",
+    attrs: {
+      id: "habitationEdit"
+    },
+    on: {
+      click: _vm.editHabitation
+    }
+  }, [_vm._v("Editar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-success",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "habitationSave"
+    },
+    on: {
+      click: _vm.saveHabitation
+    }
+  }, [_vm._v("Salvar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-danger",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "habitationCancel"
+    },
+    on: {
+      click: _vm.cancelEditHabitation
+    }
+  }, [_vm._v("Cancelar")])])]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "row"
@@ -9114,6 +9336,7 @@ var render = function render() {
       value: _vm.habitation.ownership,
       expression: "habitation.ownership"
     }],
+    staticClass: "habitationGroup",
     attrs: {
       disabled: "",
       type: "radio",
@@ -9141,6 +9364,7 @@ var render = function render() {
       value: _vm.habitation.ownership,
       expression: "habitation.ownership"
     }],
+    staticClass: "habitationGroup",
     attrs: {
       disabled: "",
       type: "radio",
@@ -9168,6 +9392,7 @@ var render = function render() {
       value: _vm.habitation.ownership,
       expression: "habitation.ownership"
     }],
+    staticClass: "habitationGroup",
     attrs: {
       disabled: "",
       type: "radio",
@@ -9202,7 +9427,7 @@ var render = function render() {
       value: _vm.habitation.condition,
       expression: "habitation.condition"
     }],
-    "class": "input100 form-control ",
+    "class": "input100 form-control habitationGroup",
     attrs: {
       disabled: "",
       type: "text",
@@ -9219,8 +9444,9 @@ var render = function render() {
         _vm.$set(_vm.habitation, "condition", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _vm.habitation.ownership === "rented" ? _c("div", {
-    staticClass: "col-12 col-md-6"
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-6",
+    style: _vm.habitation.ownership === "rented" ? "" : "display: none;"
   }, [_c("label", {
     staticClass: "form-label"
   }, [_vm._v("Valor do aluguel")]), _vm._v(" "), _c("input", {
@@ -9230,7 +9456,7 @@ var render = function render() {
       value: _vm.habitation.value,
       expression: "habitation.value"
     }],
-    "class": "input100 form-control ",
+    "class": "input100 form-control habitationGroup",
     attrs: {
       disabled: "",
       name: "value",
@@ -9246,22 +9472,52 @@ var render = function render() {
         _vm.$set(_vm.habitation, "value", $event.target.value);
       }
     }
-  })]) : _vm._e()])])]), _vm._v(" "), _c("div", {
+  })])])])]), _vm._v(" "), _c("div", {
     staticClass: "card mt-5"
   }, [_c("div", {
-    staticClass: "card-header"
-  }, [_vm._v("Observações adicionais")]), _vm._v(" "), _c("div", {
+    staticClass: "card-header d-flex justify-content-between"
+  }, [_c("div", [_vm._v("\n                                    Observações Adicionais\n                                ")]), _vm._v(" "), _c("div", [_c("button", {
+    staticClass: "text-primary",
+    attrs: {
+      id: "observationEdit"
+    },
+    on: {
+      click: _vm.editObservation
+    }
+  }, [_vm._v("Editar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-success",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "observationSave"
+    },
+    on: {
+      click: _vm.saveObservation
+    }
+  }, [_vm._v("Salvar")]), _vm._v(" "), _c("button", {
+    staticClass: "btn btn-danger",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "observationCancel"
+    },
+    on: {
+      click: _vm.cancelEditObservation
+    }
+  }, [_vm._v("Cancelar")])])]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "row"
-  }, [!!_vm.observations ? _c("textarea", {
+  }, [_c("textarea", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.observations.observation,
       expression: "observations.observation"
     }],
-    "class": "form-control",
+    "class": "form-control observationGroup",
     attrs: {
       disabled: "",
       placeholder: "Digite as observações aqui...",
@@ -9276,7 +9532,7 @@ var render = function render() {
         _vm.$set(_vm.observations, "observation", $event.target.value);
       }
     }
-  }) : _vm._e()])])])])])], 1)])])], 1);
+  })])])])])])], 1)])])], 1);
 };
 var staticRenderFns = [function () {
   var _vm = this,
