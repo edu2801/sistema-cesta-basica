@@ -540,28 +540,30 @@ export default {
             });
         },
     },
+    computed: {
+        cep() {
+            return this.address.cep;
+        },
+    },
     watch: {
-        address: {
-            handler: function (val) {
-                let cep = val.cep.replace(/\D/g, "");
-                if (cep.length == 8) {
-                    let loader = this.$loading.show();
-                    axios
-                        .get(`https://viacep.com.br/ws/${val.cep}/json/`)
-                        .then((response) => {
-                            loader.hide();
-                            this.address.street = response.data.logradouro;
-                            this.address.neighborhood = response.data.bairro;
-                            this.address.city = response.data.localidade;
-                            this.address.state = response.data.uf;
-                        })
-                        .catch((error) => {
-                            loader.hide();
-                            console.log(error);
-                        });
-                }
-            },
-            deep: true,
+        cep() {
+            let cep = this.cep.replace(/\D/g, "");
+            if (cep.length == 8) {
+                let loader = this.$loading.show();
+                axios
+                    .get(`https://viacep.com.br/ws/${this.cep}/json/`)
+                    .then((response) => {
+                        loader.hide();
+                        this.address.street = response.data.logradouro;
+                        this.address.neighborhood = response.data.bairro;
+                        this.address.city = response.data.localidade;
+                        this.address.state = response.data.uf;
+                    })
+                    .catch((error) => {
+                        loader.hide();
+                        console.log(error);
+                    });
+            }
         },
     },
 };

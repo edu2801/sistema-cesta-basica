@@ -5558,26 +5558,28 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
+  computed: {
+    cep: function cep() {
+      return this.address.cep;
+    }
+  },
   watch: {
-    address: {
-      handler: function handler(val) {
-        var _this2 = this;
-        var cep = val.cep.replace(/\D/g, "");
-        if (cep.length == 8) {
-          var loader = this.$loading.show();
-          axios.get("https://viacep.com.br/ws/".concat(val.cep, "/json/")).then(function (response) {
-            loader.hide();
-            _this2.address.street = response.data.logradouro;
-            _this2.address.neighborhood = response.data.bairro;
-            _this2.address.city = response.data.localidade;
-            _this2.address.state = response.data.uf;
-          })["catch"](function (error) {
-            loader.hide();
-            console.log(error);
-          });
-        }
-      },
-      deep: true
+    cep: function cep() {
+      var _this2 = this;
+      var cep = this.cep.replace(/\D/g, "");
+      if (cep.length == 8) {
+        var loader = this.$loading.show();
+        axios.get("https://viacep.com.br/ws/".concat(this.cep, "/json/")).then(function (response) {
+          loader.hide();
+          _this2.address.street = response.data.logradouro;
+          _this2.address.neighborhood = response.data.bairro;
+          _this2.address.city = response.data.localidade;
+          _this2.address.state = response.data.uf;
+        })["catch"](function (error) {
+          loader.hide();
+          console.log(error);
+        });
+      }
     }
   }
 });
@@ -7920,7 +7922,13 @@ var render = function render() {
     staticClass: "d-inline"
   }, [_vm._v(_vm._s(_vm.costumer.phone))])]), _vm._v(" "), _c("div", {
     staticClass: "float-end"
-  }, [_c("button", {
+  }, [_c("a", {
+    staticClass: "btn btn-primary",
+    attrs: {
+      href: "/costumers/print/" + _vm.costumer.id,
+      target: "_blank"
+    }
+  }, [_vm._v("Imprimir")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-danger",
     on: {
       click: _vm.deleteCostumer

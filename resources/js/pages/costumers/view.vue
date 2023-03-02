@@ -11,6 +11,7 @@
                 </div>
 
                 <div class="float-end">
+                    <a class="btn btn-primary" :href="'/costumers/print/' + costumer.id" target="_blank" >Imprimir</a>
                     <button class="btn btn-danger" @click="deleteCostumer">Excluir</button>
                 </div>
             </div>

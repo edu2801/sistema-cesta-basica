@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/costumers')->group(function () {
         Route::get('/view/{id}', [CostumersController::class, 'view']);
         Route::get('/new-record/{id}', [CostumersController::class, 'newRecord']);
+        Route::get('/print/{id}', [CostumersController::class, 'print']);
         Route::post('/insert-record/{id}', [CostumersController::class, 'insertRecord']);
         Route::get('/create', [CostumersController::class, 'create']);
         Route::post('/insert', [CostumersController::class, 'insert']);

@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RequestInsertCosutumer;
 use App\Http\Utils\Response;
 use App\Models\AddressModel;
 use App\Models\RedeemsModel;
 use Illuminate\Http\Request;
+use Laravel\Ui\Presets\React;
 use App\Models\CostumersModel;
 use App\Models\HabitationModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\FamilyGroupModel;
 use App\Models\ObservationsModel;
 use Illuminate\Support\Facades\DB;
 use App\Models\HealthSituationModel;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Ui\Presets\React;
+use App\Http\Requests\RequestInsertCosutumer;
 
 class CostumersController extends Controller
 {
@@ -54,6 +55,27 @@ class CostumersController extends Controller
         ];
 
         return view('pages.costumers.view', compact('personsData'));
+    }
+
+    public function print($id)
+    {
+        $costumer = CostumersModel::find($id);
+        $address = AddressModel::where('costumer_id', $id)->first();
+        $familyGroup = FamilyGroupModel::where('costumer_id', $id)->get();
+        $habitation = HabitationModel::where('costumer_id', $id)->first();
+        $healthSituation = HealthSituationModel::where('costumer_id', $id)->first();
+        $observations = ObservationsModel::where('costumer_id', $id)->first();
+
+        $data = [
+            'costumer' => $costumer,
+            'address' => $address,
+            'familyGroup' => $familyGroup,
+            'habitation' => $habitation,
+            'healthSituation' => $healthSituation,
+            'observations' => $observations,
+        ];
+
+        return Pdf::loadView('pdfs.CostumerPdf', $data)->stream('costumer.pdf');
     }
 
     public function create()
