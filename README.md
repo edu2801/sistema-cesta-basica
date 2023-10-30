@@ -1,3 +1,1 @@
-Projeto beneficiente para igreja local.
-
-Para mostrar que com programação você pode ajudar a melhorar o mundo...
+Projeto para igreja local.
