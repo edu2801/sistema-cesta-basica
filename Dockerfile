@@ -13,7 +13,11 @@ ARG PHP_VERSION
 
 LABEL fly_launch_runtime="laravel"
 
-RUN apt-get update && apt-get install -y \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    --no-install-recommends \
+    -o Dpkg::Options::="--force-confdef" \
+    -o Dpkg::Options::="--force-confold" \
     git curl zip unzip rsync ca-certificates vim htop cron \
     php${PHP_VERSION}-pgsql php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-swoole php${PHP_VERSION}-xml php${PHP_VERSION}-mbstring \
