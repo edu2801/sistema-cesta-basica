@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">Clientes por Bairro</div>
+                        <div class="card-header">Beneficiarios por Bairro</div>
                         <div class="card-body">
                             <neighborhood-chart :chart-data="neighborhoodData"></neighborhood-chart>
                         </div>
@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">Clientes por Idade</div>
+                        <div class="card-header">Beneficiarios por Idade</div>
                         <div class="card-body">
                             <age-chart :chart-data="ageData"></age-chart>
                         </div>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card">
-                        <div class="card-header">Clientes por Renda Familiar</div>
+                        <div class="card-header">Beneficiarios por Renda Familiar</div>
                         <div class="card-body">
                             <income-chart :chart-data="incomeData"></income-chart>
                         </div>
@@ -79,7 +79,7 @@ export default {
                 labels: Object.keys(this.ages),
                 datasets: [
                     {
-                        label: 'Clientes por Idade',
+                        label: 'Beneficiarios por Idade',
                         backgroundColor: '#f87979',
                         data: Object.values(this.ages),
                     },
