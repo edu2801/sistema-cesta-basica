@@ -5471,14 +5471,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateCostumer",
   data: function data() {
     return {
+      birthDateInput: null,
+      isCpfInvalid: false,
+      lastCheckedCpf: '',
       costumer: {
         name: "",
         phone: "",
-        birth_date: "",
+        birth_date: null,
         marital_status: "",
         rg: "",
         cpf: "",
@@ -5490,7 +5499,8 @@ __webpack_require__.r(__webpack_exports__);
         bolsa_familia: false,
         prestacao_continuada: false,
         renda_cidada: false,
-        cesta_basica: false
+        cesta_basica: false,
+        receives_basket_from_another_source: false
       },
       address: {
         street: "",
@@ -5504,19 +5514,21 @@ __webpack_require__.r(__webpack_exports__);
       },
       relatives: [{
         name: "",
-        relationship: "",
-        age: "",
-        occupation: "",
-        salary: ""
+        kinship: "",
+        birth_date: null,
+        birth_date_input: null,
+        income_source: "",
+        income_value: "",
+        schooling: ""
       }],
       healthSituation: {
         chronic_diseases: "",
         vices: ""
       },
       habitation: {
-        ownership: "",
-        value: null,
-        condition: ""
+        type: "",
+        financing_details: "",
+        value: null
       },
       observations: {
         observation: ""
@@ -5527,6 +5539,10 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     createCostumer: function createCostumer() {
       var _this = this;
+      if (this.isCpfInvalid) {
+        this.$toast.error("CPF Já existenete. Por favor, corrija antes de prosseguir.");
+        return;
+      }
       var loader = this.$loading.show();
       var body = {
         costumer: this.costumer,
@@ -5551,34 +5567,242 @@ __webpack_require__.r(__webpack_exports__);
     addRelative: function addRelative() {
       this.relatives.push({
         name: "",
-        relationship: "",
-        age: "",
-        occupation: "",
-        salary: ""
+        kinship: "",
+        birth_date: null,
+        birth_date_input: null,
+        income_source: "",
+        income_value: "",
+        schooling: ""
       });
+    },
+    formatCpf: function formatCpf() {
+      // As soon as the user starts typing, assume the CPF is valid until proven otherwise.
+      // This removes the red border while they are correcting it.
+      this.isCpfInvalid = false;
+      var cpf = this.costumer.cpf.replace(/\D/g, "");
+      if (cpf.length > 11) {
+        cpf = cpf.slice(0, 11);
+      }
+
+      // Apply formatting
+      cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+      cpf = cpf.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+      cpf = cpf.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d{1,2})$/, '$1.$2.$3-$4');
+      this.costumer.cpf = cpf;
+      var rawCpf = cpf.replace(/\D/g, "");
+
+      //  *** CORE LOGIC CHANGE ***
+      // Only trigger the check if the CPF has 11 digits AND we haven't checked this exact CPF before.
+      if (rawCpf.length === 11 && rawCpf !== this.lastCheckedCpf) {
+        this.checkCpf(rawCpf);
+      }
+
+      // If the user deletes characters, reset lastCheckedCpf so it can be checked again if they re-complete it.
+      if (rawCpf.length < 11) {
+        this.lastCheckedCpf = '';
+      }
+    },
+    checkCpf: function checkCpf(rawCpf) {
+      var _this2 = this;
+      // Immediately store the CPF we are about to check to prevent multiple API calls.
+      this.lastCheckedCpf = rawCpf;
+      axios.post("/costumers/check-cpf", {
+        cpf: this.costumer.cpf
+      }).then(function (response) {
+        if (response.data.msg.exists) {
+          // CPF already exists: Show the alert ONCE and set the invalid state to true.
+          _this2.$toast.error("CPF já cadastrado.");
+          _this2.isCpfInvalid = true;
+        } else {
+          // CPF is valid: Ensure the invalid state is false.
+          _this2.isCpfInvalid = false;
+        }
+      });
+    },
+    onRelativeDateInput: function onRelativeDateInput(relative) {
+      // --- Part A: MASKING ---
+      var input = relative.birth_date_input || '';
+      var digitsOnly = input.replace(/\D/g, '').slice(0, 8);
+      var formattedValue = digitsOnly;
+      if (digitsOnly.length > 4) {
+        formattedValue = "".concat(digitsOnly.slice(0, 2), "/").concat(digitsOnly.slice(2, 4), "/").concat(digitsOnly.slice(4));
+      } else if (digitsOnly.length > 2) {
+        formattedValue = "".concat(digitsOnly.slice(0, 2), "/").concat(digitsOnly.slice(2));
+      }
+      if (formattedValue !== input) {
+        relative.birth_date_input = formattedValue;
+      }
+
+      // --- Part B: SYNCHRONIZING Input -> Picker ---
+      if (digitsOnly.length === 8) {
+        var _formattedValue$split = formattedValue.split('/'),
+          _formattedValue$split2 = _slicedToArray(_formattedValue$split, 3),
+          d = _formattedValue$split2[0],
+          m = _formattedValue$split2[1],
+          y = _formattedValue$split2[2];
+        var newModelDate = "".concat(y, "-").concat(m, "-").concat(d);
+        // Update the picker's model only if it's different
+        if (relative.birth_date !== newModelDate) {
+          relative.birth_date = newModelDate;
+        }
+      } else {
+        // If the input is incomplete, clear the picker's model
+        if (relative.birth_date !== null) {
+          relative.birth_date = null;
+        }
+      }
+    },
+    // This new method handles SYNCHRONIZING Picker -> Input.
+    onRelativePickerChange: function onRelativePickerChange(newDate, relative) {
+      // newDate is the YYYY-MM-DD string from the picker's event
+      if (!newDate) {
+        relative.birth_date_input = null;
+        return;
+      }
+      var _newDate$split = newDate.split('-'),
+        _newDate$split2 = _slicedToArray(_newDate$split, 3),
+        y = _newDate$split2[0],
+        m = _newDate$split2[1],
+        d = _newDate$split2[2];
+      var formattedInput = "".concat(d, "/").concat(m, "/").concat(y);
+
+      // Update the input field
+      if (relative.birth_date_input !== formattedInput) {
+        relative.birth_date_input = formattedInput;
+      }
+    },
+    calculateAge: function calculateAge(dateString) {
+      // Return nothing if the date is not set
+      if (!dateString) return '';
+
+      // Parse the YYYY-MM-DD string into a Date object
+      var _dateString$split$map = dateString.split('-').map(Number),
+        _dateString$split$map2 = _slicedToArray(_dateString$split$map, 3),
+        year = _dateString$split$map2[0],
+        month = _dateString$split$map2[1],
+        day = _dateString$split$map2[2];
+      var birthDate = new Date(year, month - 1, day);
+      var today = new Date();
+
+      // Check for invalid or future dates
+      if (isNaN(birthDate.getTime()) || birthDate > today) {
+        return '';
+      }
+      var years = today.getFullYear() - birthDate.getFullYear();
+      var months = today.getMonth() - birthDate.getMonth();
+
+      // Adjust years if the birthday hasn't occurred this year yet
+      if (months < 0 || months === 0 && today.getDate() < birthDate.getDate()) {
+        years--;
+        // Adjust months to be a positive value (0-11)
+        months = (months + 12) % 12;
+      }
+
+      // Build the final display string
+      if (years === 0 && months === 0) {
+        return 'Recém-nascido';
+      }
+      var yearText = years > 0 ? "".concat(years, " ").concat(years > 1 ? 'anos' : 'ano') : '';
+      var monthText = months > 0 ? "".concat(months, " ").concat(months > 1 ? 'meses' : 'mês') : '';
+
+      // Join the parts with ' e ' if both exist
+      return [yearText, monthText].filter(Boolean).join(' e ');
+    },
+    formatPhone: function formatPhone() {
+      // Get only the digits from the input
+      var phone = this.costumer.phone.replace(/\D/g, '');
+
+      // Limit to 11 digits (DDD + 9 digits)
+      if (phone.length > 11) {
+        phone = phone.slice(0, 11);
+      }
+
+      // Apply the mask based on the number of digits
+      if (phone.length > 10) {
+        // (XX) Y XXXX-XXXX
+        phone = phone.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+      } else if (phone.length > 6) {
+        // (XX) XXXX-XXXX
+        phone = phone.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+      } else if (phone.length > 2) {
+        // (XX) XXXX
+        phone = phone.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+      } else {
+        // (XX
+        phone = phone.replace(/^(\d*)/, '($1');
+      }
+
+      // Update the model value, ensuring it's not the same to avoid loops
+      if (phone !== this.costumer.phone) {
+        this.costumer.phone = phone;
+      }
     }
   },
   computed: {
     cep: function cep() {
       return this.address.cep;
+    },
+    costumerAge: function costumerAge() {
+      return this.calculateAge(this.costumer.birth_date);
     }
   },
   watch: {
     cep: function cep() {
-      var _this2 = this;
+      var _this3 = this;
       var cep = this.cep.replace(/\D/g, "");
       if (cep.length == 8) {
         var loader = this.$loading.show();
         axios.get("https://viacep.com.br/ws/".concat(this.cep, "/json/")).then(function (response) {
           loader.hide();
-          _this2.address.street = response.data.logradouro;
-          _this2.address.neighborhood = response.data.bairro;
-          _this2.address.city = response.data.localidade;
-          _this2.address.state = response.data.uf;
+          _this3.address.street = response.data.logradouro;
+          _this3.address.neighborhood = response.data.bairro;
+          _this3.address.city = response.data.localidade;
+          _this3.address.state = response.data.uf;
         })["catch"](function (error) {
           loader.hide();
           console.log(error);
         });
+      }
+    },
+    birthDateInput: function birthDateInput(newValue) {
+      // --- Part A: Masking Logic ---
+      var digitsOnly = newValue ? newValue.replace(/\D/g, "").slice(0, 8) : "";
+      var formattedValue = digitsOnly;
+      if (digitsOnly.length > 4) {
+        formattedValue = "".concat(digitsOnly.slice(0, 2), "/").concat(digitsOnly.slice(2, 4), "/").concat(digitsOnly.slice(4));
+      } else if (digitsOnly.length > 2) {
+        formattedValue = "".concat(digitsOnly.slice(0, 2), "/").concat(digitsOnly.slice(2));
+      }
+      if (formattedValue !== newValue) {
+        this.birthDateInput = formattedValue;
+      }
+
+      // --- Part B: Updating the real model ---
+      // If the date is complete (8 digits), update the picker's model.
+      if (digitsOnly.length === 8) {
+        var _formattedValue$split3 = formattedValue.split('/'),
+          _formattedValue$split4 = _slicedToArray(_formattedValue$split3, 3),
+          day = _formattedValue$split4[0],
+          month = _formattedValue$split4[1],
+          year = _formattedValue$split4[2];
+        this.costumer.birth_date = "".concat(year, "-").concat(month, "-").concat(day);
+      } else {
+        // If the date is incomplete, make sure the picker's model is cleared.
+        this.costumer.birth_date = null;
+      }
+    },
+    // WATCHER 2: Handles selecting from the date picker
+    'costumer.birth_date': function costumerBirth_date(newDate) {
+      // If the picker's date changes, update the text input field.
+      if (newDate) {
+        var _newDate$split3 = newDate.split('-'),
+          _newDate$split4 = _slicedToArray(_newDate$split3, 3),
+          year = _newDate$split4[0],
+          month = _newDate$split4[1],
+          day = _newDate$split4[2];
+        this.birthDateInput = "".concat(day, "/").concat(month, "/").concat(year);
+      } else {
+        this.birthDateInput = null;
       }
     }
   }
@@ -6547,17 +6771,17 @@ var render = function render() {
       value: _vm.costumer.phone
     },
     on: {
-      input: function input($event) {
+      input: [function ($event) {
         if ($event.target.composing) return;
         _vm.$set(_vm.costumer, "phone", $event.target.value);
-      }
+      }, _vm.formatPhone]
     }
   }), _vm._v(" "), _c("span", {
     staticClass: "focus-input100"
   }), _vm._v(" "), _c("span", {
     staticClass: "symbol-input100"
   }, [_c("i", {
-    staticClass: "zmdi zmdi-email",
+    staticClass: "mdi mdi-phone",
     attrs: {
       "aria-hidden": "true"
     }
@@ -6571,26 +6795,47 @@ var render = function render() {
     attrs: {
       "close-on-content-click": false,
       transition: "scale-transition",
-      "max-width": "290"
+      "offset-y": "",
+      "min-width": "auto"
     },
     scopedSlots: _vm._u([{
       key: "activator",
       fn: function fn(_ref) {
         var on = _ref.on,
           attrs = _ref.attrs;
-        return [_c("v-text-field", _vm._g(_vm._b({
-          staticClass: "pt-0",
+        return [_c("div", {
+          staticClass: "wrap-input100"
+        }, [_c("input", _vm._g(_vm._b({
+          directives: [{
+            name: "model",
+            rawName: "v-model",
+            value: _vm.birthDateInput,
+            expression: "birthDateInput"
+          }],
+          "class": "input100 form-control",
           attrs: {
-            readonly: ""
+            placeholder: "DD/MM/AAAA",
+            type: "text"
           },
-          model: {
-            value: _vm.costumer.birth_date.split("-").reverse().join("/"),
-            callback: function callback($$v) {
-              _vm.$set(_vm.costumer.birth_date.split("-").reverse(), "join('/')", $$v);
-            },
-            expression: "\n                                    costumer.birth_date\n                                        .split('-')\n                                        .reverse()\n                                        .join('/')\n                                "
+          domProps: {
+            value: _vm.birthDateInput
+          },
+          on: {
+            input: function input($event) {
+              if ($event.target.composing) return;
+              _vm.birthDateInput = $event.target.value;
+            }
           }
-        }, "v-text-field", attrs, false), on))];
+        }, "input", attrs, false), on)), _vm._v(" "), _c("span", {
+          staticClass: "focus-input100"
+        }), _vm._v(" "), _c("span", {
+          staticClass: "symbol-input100"
+        }, [_c("i", {
+          staticClass: "mdi mdi-calendar",
+          attrs: {
+            "aria-hidden": "true"
+          }
+        })])])];
       }
     }]),
     model: {
@@ -6602,7 +6847,8 @@ var render = function render() {
     }
   }, [_vm._v(" "), _c("v-date-picker", {
     attrs: {
-      "no-title": ""
+      "no-title": "",
+      locale: "pt-BR"
     },
     on: {
       input: function input($event) {
@@ -6616,44 +6862,65 @@ var render = function render() {
       },
       expression: "costumer.birth_date"
     }
-  })], 1)], 1), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _vm.costumerAge ? _c("div", {
+    staticClass: "text-muted",
+    staticStyle: {
+      "font-size": "0.875em",
+      "margin-top": "4px"
+    }
+  }, [_vm._v("\n                            Idade: " + _vm._s(_vm.costumerAge) + "\n                        ")]) : _vm._e()], 1), _vm._v(" "), _c("div", {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
-  }, [_vm._v("Estado civil")]), _vm._v(" "), _c("div", {
-    staticClass: "wrap-input100"
-  }, [_c("input", {
+  }, [_vm._v("Estado civil")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.costumer.marital_status,
       expression: "costumer.marital_status"
     }],
-    "class": "input100 form-control ",
-    attrs: {
-      name: "marital_status",
-      placeholder: "Estado Civil",
-      type: "text"
-    },
-    domProps: {
-      value: _vm.costumer.marital_status
-    },
+    staticClass: "form-control",
     on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.costumer, "marital_status", $event.target.value);
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.costumer, "marital_status", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _c("span", {
-    staticClass: "symbol-input100"
-  }, [_c("i", {
-    staticClass: "zmdi zmdi-lock",
+  }, [_c("option", {
     attrs: {
-      "aria-hidden": "true"
+      value: "",
+      disabled: ""
     }
-  })])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Selecione...")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "solteiro"
+    }
+  }, [_vm._v("Solteiro(a)")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "casado"
+    }
+  }, [_vm._v("Casado(a)")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "divorciado"
+    }
+  }, [_vm._v("Divorciado(a)")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "viuvo"
+    }
+  }, [_vm._v("Viúvo(a)")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "separado"
+    }
+  }, [_vm._v("Separado(a)")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "uniao_estavel"
+    }
+  }, [_vm._v("União Estável")])])])]), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, [_c("div", {
     staticClass: "col-12 col-md-6 mb-3"
@@ -6705,20 +6972,24 @@ var render = function render() {
       value: _vm.costumer.cpf,
       expression: "costumer.cpf"
     }],
-    "class": "input100 form-control ",
+    "class": {
+      "input100 form-control": true,
+      "is-invalid": _vm.isCpfInvalid
+    },
     attrs: {
       name: "cpf",
       placeholder: "CPF",
-      type: "text"
+      type: "text",
+      maxlength: "14"
     },
     domProps: {
       value: _vm.costumer.cpf
     },
     on: {
-      input: function input($event) {
+      input: [function ($event) {
         if ($event.target.composing) return;
         _vm.$set(_vm.costumer, "cpf", $event.target.value);
-      }
+      }, _vm.formatCpf]
     }
   }), _vm._v(" "), _c("span", {
     staticClass: "focus-input100"
@@ -6729,46 +7000,69 @@ var render = function render() {
     attrs: {
       "aria-hidden": "true"
     }
-  })])])])]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _vm.isCpfInvalid ? _c("div", {
+    staticClass: "text-danger mt-1",
+    staticStyle: {
+      "font-size": "0.875em"
+    }
+  }, [_vm._v("\n                            CPF já cadastrado no sistema\n                        ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, [_c("div", {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
-  }, [_vm._v("Escolaridade")]), _vm._v(" "), _c("div", {
-    staticClass: "wrap-input100"
-  }, [_c("input", {
+  }, [_vm._v("Escolaridade")]), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.costumer.schooling,
       expression: "costumer.schooling"
     }],
-    "class": "input100 form-control ",
-    attrs: {
-      name: "schooling",
-      placeholder: "Escolaridade",
-      type: "text"
-    },
-    domProps: {
-      value: _vm.costumer.schooling
-    },
+    staticClass: "form-control",
     on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.costumer, "schooling", $event.target.value);
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.costumer, "schooling", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
       }
     }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _c("span", {
-    staticClass: "symbol-input100"
-  }, [_c("i", {
-    staticClass: "mdi mdi-account",
+  }, [_c("option", {
     attrs: {
-      "aria-hidden": "true"
+      value: ""
     }
-  })])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Selecione")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "analfabeto"
+    }
+  }, [_vm._v("Analfabeto")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "fundamental_incompleto"
+    }
+  }, [_vm._v("Fundamental Incompleto")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "fundamental_completo"
+    }
+  }, [_vm._v("Fundamental Completo")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "medio_incompleto"
+    }
+  }, [_vm._v("Médio Incompleto")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "medio_completo"
+    }
+  }, [_vm._v("Médio Completo")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "superior_incompleto"
+    }
+  }, [_vm._v("Superior Incompleto")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "superior_completo"
+    }
+  }, [_vm._v("Superior Completo")])])]), _vm._v(" "), _c("div", {
     staticClass: "col-12 col-md-6 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
@@ -7161,11 +7455,12 @@ var render = function render() {
     staticClass: "card-header"
   }, [_vm._v("Grupo familiar")]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
-  }, [_vm._l(_vm.relatives, function (relative) {
+  }, [_vm._l(_vm.relatives, function (relative, index) {
     return _c("div", {
+      key: index,
       staticClass: "row"
     }, [_c("div", {
-      staticClass: "col-12 col-md-4 mb-3"
+      staticClass: "col-12 col-md-3 mb-3"
     }, [_c("label", {
       staticClass: "form-label"
     }, [_vm._v("Nome")]), _vm._v(" "), _c("div", {
@@ -7192,16 +7487,7 @@ var render = function render() {
           _vm.$set(relative, "name", $event.target.value);
         }
       }
-    }), _vm._v(" "), _c("span", {
-      staticClass: "focus-input100"
-    }), _vm._v(" "), _c("span", {
-      staticClass: "symbol-input100"
-    }, [_c("i", {
-      staticClass: "zmdi zmdi-email",
-      attrs: {
-        "aria-hidden": "true"
-      }
-    })])])]), _vm._v(" "), _c("div", {
+    })])]), _vm._v(" "), _c("div", {
       staticClass: "col-12 col-md-2 mb-3"
     }, [_c("label", {
       staticClass: "form-label"
@@ -7211,145 +7497,209 @@ var render = function render() {
       directives: [{
         name: "model",
         rawName: "v-model",
-        value: relative.relationship,
-        expression: "relative.relationship"
+        value: relative.kinship,
+        expression: "relative.kinship"
       }],
       "class": "input100 form-control ",
       attrs: {
-        name: "relative_relationship",
+        name: "relative_kinship",
         placeholder: "Parentesco",
         type: "text"
       },
       domProps: {
-        value: relative.relationship
+        value: relative.kinship
       },
       on: {
         input: function input($event) {
           if ($event.target.composing) return;
-          _vm.$set(relative, "relationship", $event.target.value);
+          _vm.$set(relative, "kinship", $event.target.value);
         }
       }
-    }), _vm._v(" "), _c("span", {
-      staticClass: "focus-input100"
-    }), _vm._v(" "), _c("span", {
-      staticClass: "symbol-input100"
-    }, [_c("i", {
-      staticClass: "zmdi zmdi-email",
-      attrs: {
-        "aria-hidden": "true"
-      }
-    })])])]), _vm._v(" "), _c("div", {
+    })])]), _vm._v(" "), _c("div", {
       staticClass: "col-12 col-md-2 mb-3"
     }, [_c("label", {
       staticClass: "form-label"
-    }, [_vm._v("Idade")]), _vm._v(" "), _c("div", {
+    }, [_vm._v("Data de Nascimento")]), _vm._v(" "), _c("v-menu", {
+      attrs: {
+        "close-on-content-click": false,
+        transition: "scale-transition",
+        "offset-y": "",
+        "min-width": "auto"
+      },
+      scopedSlots: _vm._u([{
+        key: "activator",
+        fn: function fn(_ref2) {
+          var on = _ref2.on,
+            attrs = _ref2.attrs;
+          return [_c("input", _vm._g(_vm._b({
+            directives: [{
+              name: "model",
+              rawName: "v-model",
+              value: relative.birth_date_input,
+              expression: "relative.birth_date_input"
+            }],
+            "class": "input100 form-control",
+            attrs: {
+              placeholder: "DD/MM/AAAA",
+              type: "text"
+            },
+            domProps: {
+              value: relative.birth_date_input
+            },
+            on: {
+              input: [function ($event) {
+                if ($event.target.composing) return;
+                _vm.$set(relative, "birth_date_input", $event.target.value);
+              }, function ($event) {
+                return _vm.onRelativeDateInput(relative);
+              }]
+            }
+          }, "input", attrs, false), on))];
+        }
+      }], null, true),
+      model: {
+        value: relative.menu,
+        callback: function callback($$v) {
+          _vm.$set(relative, "menu", $$v);
+        },
+        expression: "relative.menu"
+      }
+    }, [_vm._v(" "), _c("v-date-picker", {
+      attrs: {
+        "no-title": "",
+        locale: "pt-BR"
+      },
+      on: {
+        input: function input($event) {
+          _vm.onRelativePickerChange($event, relative);
+          relative.menu = false;
+        }
+      },
+      model: {
+        value: relative.birth_date,
+        callback: function callback($$v) {
+          _vm.$set(relative, "birth_date", $$v);
+        },
+        expression: "relative.birth_date"
+      }
+    })], 1), _vm._v(" "), _vm.calculateAge(relative.birth_date) ? _c("div", {
+      staticClass: "text-muted",
+      staticStyle: {
+        "font-size": "0.875em",
+        "margin-top": "4px"
+      }
+    }, [_vm._v("\n                            " + _vm._s(_vm.calculateAge(relative.birth_date)) + "\n                        ")]) : _vm._e()], 1), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-2 mb-3"
+    }, [_c("label", {
+      staticClass: "form-label"
+    }, [_vm._v("Fonte de Renda")]), _vm._v(" "), _c("div", {
       staticClass: "wrap-input100"
     }, [_c("input", {
       directives: [{
         name: "model",
         rawName: "v-model",
-        value: relative.age,
-        expression: "relative.age"
+        value: relative.income_source,
+        expression: "relative.income_source"
       }],
       "class": "input100 form-control ",
       attrs: {
-        name: "relative_age",
-        placeholder: "Idade",
+        name: "relative_income_source",
+        placeholder: "Fonte de Renda",
         type: "text"
       },
       domProps: {
-        value: relative.age
+        value: relative.income_source
       },
       on: {
         input: function input($event) {
           if ($event.target.composing) return;
-          _vm.$set(relative, "age", $event.target.value);
+          _vm.$set(relative, "income_source", $event.target.value);
         }
       }
-    }), _vm._v(" "), _c("span", {
-      staticClass: "focus-input100"
-    }), _vm._v(" "), _c("span", {
-      staticClass: "symbol-input100"
-    }, [_c("i", {
-      staticClass: "zmdi zmdi-email",
-      attrs: {
-        "aria-hidden": "true"
-      }
-    })])])]), _vm._v(" "), _c("div", {
-      staticClass: "col-12 col-md-2 mb-3"
+    })])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12 col-md-1 mb-3"
     }, [_c("label", {
       staticClass: "form-label"
-    }, [_vm._v("Profissão")]), _vm._v(" "), _c("div", {
+    }, [_vm._v("Valor")]), _vm._v(" "), _c("div", {
       staticClass: "wrap-input100"
     }, [_c("input", {
       directives: [{
         name: "model",
         rawName: "v-model",
-        value: relative.occupation,
-        expression: "relative.occupation"
+        value: relative.income_value,
+        expression: "relative.income_value"
       }],
       "class": "input100 form-control ",
       attrs: {
-        name: "occupation",
-        placeholder: "Profissão",
-        type: "text"
+        name: "relative_income_value",
+        placeholder: "Valor",
+        type: "number"
       },
       domProps: {
-        value: relative.occupation
+        value: relative.income_value
       },
       on: {
         input: function input($event) {
           if ($event.target.composing) return;
-          _vm.$set(relative, "occupation", $event.target.value);
+          _vm.$set(relative, "income_value", $event.target.value);
         }
       }
-    }), _vm._v(" "), _c("span", {
-      staticClass: "focus-input100"
-    }), _vm._v(" "), _c("span", {
-      staticClass: "symbol-input100"
-    }, [_c("i", {
-      staticClass: "zmdi zmdi-email",
-      attrs: {
-        "aria-hidden": "true"
-      }
-    })])])]), _vm._v(" "), _c("div", {
+    })])]), _vm._v(" "), _c("div", {
       staticClass: "col-12 col-md-2 mb-3"
     }, [_c("label", {
       staticClass: "form-label"
-    }, [_vm._v("Salário")]), _vm._v(" "), _c("div", {
-      staticClass: "wrap-input100"
-    }, [_c("input", {
+    }, [_vm._v("Escolaridade")]), _vm._v(" "), _c("select", {
       directives: [{
         name: "model",
         rawName: "v-model",
-        value: relative.salary,
-        expression: "relative.salary"
+        value: relative.schooling,
+        expression: "relative.schooling"
       }],
-      "class": "input100 form-control ",
-      attrs: {
-        name: "relative_salary",
-        placeholder: "Salário",
-        type: "text"
-      },
-      domProps: {
-        value: relative.salary
-      },
+      staticClass: "form-control",
       on: {
-        input: function input($event) {
-          if ($event.target.composing) return;
-          _vm.$set(relative, "salary", $event.target.value);
+        change: function change($event) {
+          var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+            return o.selected;
+          }).map(function (o) {
+            var val = "_value" in o ? o._value : o.value;
+            return val;
+          });
+          _vm.$set(relative, "schooling", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
         }
       }
-    }), _vm._v(" "), _c("span", {
-      staticClass: "focus-input100"
-    }), _vm._v(" "), _c("span", {
-      staticClass: "symbol-input100"
-    }, [_c("i", {
-      staticClass: "zmdi zmdi-email",
+    }, [_c("option", {
       attrs: {
-        "aria-hidden": "true"
+        value: ""
       }
-    })])])])]);
+    }, [_vm._v("Selecione")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "analfabeto"
+      }
+    }, [_vm._v("Analfabeto")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "fundamental_incompleto"
+      }
+    }, [_vm._v("Fundamental Incompleto")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "fundamental_completo"
+      }
+    }, [_vm._v("Fundamental Completo")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "medio_incompleto"
+      }
+    }, [_vm._v("Médio Incompleto")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "medio_completo"
+      }
+    }, [_vm._v("Médio Completo")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "superior_incompleto"
+      }
+    }, [_vm._v("Superior Incompleto")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "superior_completo"
+      }
+    }, [_vm._v("Superior Completo")])])])]);
   }), _vm._v(" "), _c("div", {
     staticClass: "row"
   }, [_c("div", {
@@ -7557,7 +7907,45 @@ var render = function render() {
     attrs: {
       "for": "checkCestaBasica"
     }
-  }, [_vm._v("Cesta Básica")])])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Cesta Básica")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-md-4"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.costumer.receives_basket_from_another_source,
+      expression: "costumer.receives_basket_from_another_source"
+    }],
+    attrs: {
+      type: "checkbox",
+      id: "checkReceivesBasketFromAnotherSource"
+    },
+    domProps: {
+      checked: Array.isArray(_vm.costumer.receives_basket_from_another_source) ? _vm._i(_vm.costumer.receives_basket_from_another_source, null) > -1 : _vm.costumer.receives_basket_from_another_source
+    },
+    on: {
+      change: function change($event) {
+        var $$a = _vm.costumer.receives_basket_from_another_source,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = null,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && _vm.$set(_vm.costumer, "receives_basket_from_another_source", $$a.concat([$$v]));
+          } else {
+            $$i > -1 && _vm.$set(_vm.costumer, "receives_basket_from_another_source", $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.$set(_vm.costumer, "receives_basket_from_another_source", $$c);
+        }
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    attrs: {
+      "for": "checkReceivesBasketFromAnotherSource"
+    }
+  }, [_vm._v("Já recebe cesta básica de outro\n                            lugar?")])])])])]), _vm._v(" "), _c("div", {
     staticClass: "card mt-5"
   }, [_c("div", {
     staticClass: "card-header"
@@ -7593,16 +7981,7 @@ var render = function render() {
         _vm.$set(_vm.healthSituation, "chronic_diseases", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _c("span", {
-    staticClass: "symbol-input100"
-  }, [_c("i", {
-    staticClass: "zmdi zmdi-email",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })])])]), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _c("div", {
     staticClass: "col-12 col-md-4 mb-3"
   }, [_c("label", {
     staticClass: "form-label"
@@ -7630,16 +8009,7 @@ var render = function render() {
         _vm.$set(_vm.healthSituation, "vices", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "focus-input100"
-  }), _vm._v(" "), _c("span", {
-    staticClass: "symbol-input100"
-  }, [_c("i", {
-    staticClass: "zmdi zmdi-email",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })])])])])])]), _vm._v(" "), _c("div", {
+  })])])])])]), _vm._v(" "), _c("div", {
     staticClass: "card mt-5"
   }, [_c("div", {
     staticClass: "card-header"
@@ -7653,8 +8023,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.habitation.ownership,
-      expression: "habitation.ownership"
+      value: _vm.habitation.type,
+      expression: "habitation.type"
     }],
     attrs: {
       type: "radio",
@@ -7662,11 +8032,11 @@ var render = function render() {
       value: "rented"
     },
     domProps: {
-      checked: _vm._q(_vm.habitation.ownership, "rented")
+      checked: _vm._q(_vm.habitation.type, "rented")
     },
     on: {
       change: function change($event) {
-        return _vm.$set(_vm.habitation, "ownership", "rented");
+        return _vm.$set(_vm.habitation, "type", "rented");
       }
     }
   }), _vm._v(" "), _c("label", {
@@ -7679,8 +8049,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.habitation.ownership,
-      expression: "habitation.ownership"
+      value: _vm.habitation.type,
+      expression: "habitation.type"
     }],
     attrs: {
       type: "radio",
@@ -7688,11 +8058,11 @@ var render = function render() {
       value: "owned"
     },
     domProps: {
-      checked: _vm._q(_vm.habitation.ownership, "owned")
+      checked: _vm._q(_vm.habitation.type, "owned")
     },
     on: {
       change: function change($event) {
-        return _vm.$set(_vm.habitation, "ownership", "owned");
+        return _vm.$set(_vm.habitation, "type", "owned");
       }
     }
   }), _vm._v(" "), _c("label", {
@@ -7705,8 +8075,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.habitation.ownership,
-      expression: "habitation.ownership"
+      value: _vm.habitation.type,
+      expression: "habitation.type"
     }],
     attrs: {
       type: "radio",
@@ -7714,11 +8084,11 @@ var render = function render() {
       value: "gived"
     },
     domProps: {
-      checked: _vm._q(_vm.habitation.ownership, "gived")
+      checked: _vm._q(_vm.habitation.type, "gived")
     },
     on: {
       change: function change($event) {
-        return _vm.$set(_vm.habitation, "ownership", "gived");
+        return _vm.$set(_vm.habitation, "type", "gived");
       }
     }
   }), _vm._v(" "), _c("label", {
@@ -7726,40 +8096,39 @@ var render = function render() {
       "for": "radioGived"
     }
   }, [_vm._v("Cedida")])])]), _vm._v(" "), _c("div", {
-    staticClass: "row"
+    staticClass: "row mt-3"
   }, [_c("div", {
-    staticClass: "col-12 col md-6"
+    staticClass: "col-12 col-md-6"
   }, [_c("label", {
-    staticClass: "form-label",
-    attrs: {
-      "for": "habitationCondition"
-    }
-  }, [_vm._v("Condição")]), _vm._v(" "), _c("input", {
+    staticClass: "form-label"
+  }, [_vm._v("Detalhes de Financiamento/Cessão")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.habitation.condition,
-      expression: "habitation.condition"
+      value: _vm.habitation.financing_details,
+      expression: "habitation.financing_details"
     }],
     "class": "input100 form-control ",
     attrs: {
       type: "text",
-      id: "habitationCondition",
-      name: "habitationCondition",
-      placeholder: "Condição"
+      id: "financing_details",
+      name: "financing_details",
+      placeholder: "Detalhes"
     },
     domProps: {
-      value: _vm.habitation.condition
+      value: _vm.habitation.financing_details
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.$set(_vm.habitation, "condition", $event.target.value);
+        _vm.$set(_vm.habitation, "financing_details", $event.target.value);
       }
     }
-  })]), _vm._v(" "), _vm.habitation.ownership === "rented" ? _c("div", {
+  })]), _vm._v(" "), _vm.habitation.type === "rented" ? _c("div", {
     staticClass: "col-12 col-md-6"
-  }, [_c("input", {
+  }, [_c("label", {
+    staticClass: "form-label"
+  }, [_vm._v("Valor do Aluguel")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",

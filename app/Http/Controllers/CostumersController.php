@@ -6,7 +6,6 @@ use App\Http\Utils\Response;
 use App\Models\AddressModel;
 use App\Models\RedeemsModel;
 use Illuminate\Http\Request;
-use Laravel\Ui\Presets\React;
 use App\Models\CostumersModel;
 use App\Models\HabitationModel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -19,6 +18,24 @@ use App\Http\Requests\RequestInsertCosutumer;
 
 class CostumersController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = CostumersModel::query();
+
+        if ($request->has('cpf')) {
+            $query->where('cpf', 'like', '%' . $request->cpf . '%');
+        }
+
+        return view('pages.costumers.index', ['costumers' => $query->paginate()]);
+    }
+
+    public function checkCpf(Request $request)
+    {
+        $cpf = preg_replace('/[^0-9]/', '', $request->cpf);
+        $exists = CostumersModel::where('cpf', $cpf)->exists();
+        return Response::success('CPF check', ['exists' => $exists]);
+    }
+
     public function newRecord($id)
     {
         $admin = Auth::user();
@@ -94,6 +111,7 @@ class CostumersController extends Controller
             'responsible_id' => Auth::user()->id,
             'responsible_name' => Auth::user()->name,
             'observation' => $requestData['observation'] ?? null,
+            'delivery_date' => $requestData['delivery_date'] ?? null,
         ]);
 
         $updateCostumer = CostumersModel::where('id', $id)->update([
@@ -121,37 +139,29 @@ class CostumersController extends Controller
         $requestData['address']['costumer_id'] = $createCostumer['id'];
         $createAddress = AddressModel::create($requestData['address']);
 
-        $createPerson = [true];
         foreach ($requestData['relatives'] as $person) {
-            if (empty($person['name']) && empty($person['age'])  && empty($person['relationship'])) {
+            if (empty($person['name'])) {
                 continue;
             }
             $person['costumer_id'] = $createCostumer['id'];
-            $createPerson[] = FamilyGroupModel::create($person);
+            FamilyGroupModel::create($person);
         }
 
-        $createHealth = true;
         if (!empty($requestData['healthSituation']['vices']) || !empty($requestData['healthSituation']['chronic_diseases'])) {
             $requestData['healthSituation']['costumer_id'] = $createCostumer['id'];
-            $createHealth = HealthSituationModel::create($requestData['healthSituation']);
+            HealthSituationModel::create($requestData['healthSituation']);
         }
 
         $requestData['habitation']['costumer_id'] = $createCostumer['id'];
-        $createHabitation = HabitationModel::create($requestData['habitation']);
+        HabitationModel::create($requestData['habitation']);
 
-        $createObservation = true;
         if (!empty($requestData['observations']['observation'])) {
             $requestData['observations']['costumer_id'] = $createCostumer['id'];
-            $createObservation = ObservationsModel::create($requestData['observations']);
+            ObservationsModel::create($requestData['observations']);
         }
 
-        if ($createCostumer && $createAddress && $createPerson && $createHealth && $createHabitation && $createObservation) {
-            DB::commit();
-            return Response::success('Cliente criado com sucesso!', $createCostumer);
-        } else {
-            DB::rollBack();
-            return Response::error('Erro ao criar cliente!', $createCostumer);
-        }
+        DB::commit();
+        return Response::success('Cliente criado com sucesso!', $createCostumer);
     }
 
     public function delete($id)
@@ -161,94 +171,44 @@ class CostumersController extends Controller
         return Response::success('Cliente deletado com sucesso!', $costumer);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         $requestData = $request->all();
 
         DB::beginTransaction();
 
-        $updateCostumer = true;
-        if (!empty($requestData['costumer'])) {
-            $request->validate(
-                [
-                    'costumer.name' => 'required',
-                    'costumer.cpf' => 'nullable|unique:costumers,cpf,' . $requestData['costumer']['id'],
-                ],
-                [
-                    'costumer.name.required' => 'O campo nome é obrigatório',
-                    'costumer.cpf.unique' => 'O CPF informado já está cadastrado',
-                ]
-            );
-            $requestData['costumer']['cpf'] = preg_replace('/[^0-9]/', '', $requestData['costumer']['cpf']);
-            unset($requestData['costumer']['created_at']);
-            unset($requestData['costumer']['updated_at']);
-            $updateCostumer = CostumersModel::where('id', $requestData['costumer']['id'])->update($requestData['costumer']);
-        }
+        $costumer = CostumersModel::findOrFail($id);
+        $costumer->update($requestData['costumer']);
 
-        $updateAddress = true;
         if (!empty($requestData['address'])) {
-            unset($requestData['address']['created_at']);
-            unset($requestData['address']['updated_at']);
-            $updateAddress = AddressModel::where('costumer_id', $requestData['address']['costumer_id'])->update($requestData['address']);
+            AddressModel::updateOrCreate(['costumer_id' => $id], $requestData['address']);
         }
 
-        $updatePerson = [true];
         if (!empty($requestData['relatives'])) {
-            foreach ($requestData['relatives'] as $person) {
-                if (empty($person['name']) && empty($person['age'])  && empty($person['relationship'])) {
-                    continue;
-                }
-                unset($person['created_at']);
-                unset($person['updated_at']);
-
-                if (empty($person['id'])) {
-                    $updatePerson[] = FamilyGroupModel::create($person);
-                    continue;
-                }
-
-                $updatePerson[] = FamilyGroupModel::where('id', $person['id'])->update($person);
-            }
-        }
-
-        $updateHealth = true;
-        if (!empty($requestData['healthSituation'])) {
-            unset($requestData['healthSituation']['created_at']);
-            unset($requestData['healthSituation']['updated_at']);
-            if (!empty($requestData['healthSituation']['vices']) || !empty($requestData['healthSituation']['chronic_diseases'])) {
-                $updateHealth = HealthSituationModel::where('costumer_id', $requestData['healthSituation']['costumer_id'])->first();
-                if (empty($updateHealth)) {
-                    $updateHealth = HealthSituationModel::create($requestData['healthSituation']);
+            foreach ($requestData['relatives'] as $relativeData) {
+                if (isset($relativeData['id'])) {
+                    FamilyGroupModel::updateOrCreate(['id' => $relativeData['id']], $relativeData);
                 } else {
-                    $updateHealth = HealthSituationModel::where('costumer_id', $requestData['healthSituation']['costumer_id'])->update($requestData['healthSituation']);
+                    $relativeData['costumer_id'] = $id;
+                    FamilyGroupModel::create($relativeData);
                 }
             }
         }
 
-        $updateHabitation = true;
+        if (!empty($requestData['healthSituation'])) {
+            HealthSituationModel::updateOrCreate(['costumer_id' => $id], $requestData['healthSituation']);
+        }
+
         if (!empty($requestData['habitation'])) {
-            unset($requestData['habitation']['created_at']);
-            unset($requestData['habitation']['updated_at']);
-            $updateHabitation = HabitationModel::where('costumer_id', $requestData['habitation']['costumer_id'])->update($requestData['habitation']);
+            HabitationModel::updateOrCreate(['costumer_id' => $id], $requestData['habitation']);
         }
 
-        $updateObservation = true;
         if (!empty($requestData['observations'])) {
-            unset($requestData['observations']['created_at']);
-            unset($requestData['observations']['updated_at']);
-            $updateObservation = ObservationsModel::where('costumer_id', $requestData['observations']['costumer_id'])->first();
-            if (empty($updateObservation)) {
-                $updateObservation = ObservationsModel::create($requestData['observations']);
-            } else {
-                $updateObservation = ObservationsModel::where('costumer_id', $requestData['observations']['costumer_id'])->update($requestData['observations']);
-            }
+            ObservationsModel::updateOrCreate(['costumer_id' => $id], $requestData['observations']);
         }
 
-        if ($updateCostumer && $updateAddress && $updatePerson && $updateHealth && $updateHabitation && $updateObservation) {
-            DB::commit();
-            return Response::success('Cliente atualizado com sucesso!', $updateCostumer);
-        } else {
-            DB::rollBack();
-            return Response::error('Erro ao atualizar cliente!', $updateCostumer);
-        }
+        DB::commit();
+
+        return Response::success('Cliente atualizado com sucesso!', $costumer);
     }
 }

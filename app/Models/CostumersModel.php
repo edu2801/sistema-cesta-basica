@@ -26,6 +26,7 @@ class CostumersModel extends Model
         'prestacao_continuada',
         'renda_cidada',
         'cesta_basica',
+        'receives_basket_from_another_source',
         'family_income',
         'last_redeem',
         'created_at',

@@ -13,6 +13,9 @@ class HabitationModel extends Model
 
     protected $fillable = [
         'costumer_id',
+        'situation',
+        'type',
+        'financing_details',
         'ownership',
         'condition',
         'value',
