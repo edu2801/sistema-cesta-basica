@@ -2,16 +2,19 @@
     <div class="bg-white">
         <navbarVue />
         <div class="container">
-            <div class="mb-3">
+            <div class="mb-3 d-flex justify-content-between">
                 <div>
-                    Nome: <h2 class="d-inline">{{ costumer.name }}</h2>
-                </div>
-                <div>
-                    Telefone: <h5 class="d-inline">{{ costumer.phone }}</h5>
+                    <div>
+                        Nome: <h2 class="d-inline">{{ costumer.name }}</h2>
+                    </div>
+                    <div>
+                        Telefone: <h5 class="d-inline">{{ costumer.phone }}</h5>
+                    </div>
                 </div>
 
                 <div class="float-end">
-                    <a class="btn btn-primary" :href="'/costumers/print/' + costumer.id" target="_blank" >Imprimir</a>
+                    <a class="btn btn-primary" :href="'/costumers/edit/' + costumer.id">Editar</a>
+                    <a class="btn btn-primary" :href="'/costumers/print/' + costumer.id" target="_blank">Imprimir</a>
                     <button class="btn btn-danger" @click="deleteCostumer">Excluir</button>
                 </div>
             </div>
@@ -56,14 +59,6 @@
                                     <div>
                                         Dados do básicos
                                     </div>
-                                    <div>
-                                        <button id="costumerEdit" class="text-primary"
-                                            @click="editCostumer">Editar</button>
-                                        <button id="costumerSave" class="btn btn-success" style="display: none;"
-                                            @click="saveCostumer">Salvar</button>
-                                        <button id="costumerCancel" class="btn btn-danger" style="display: none;"
-                                            @click="cancelEditCostumer">Cancelar</button>
-                                    </div>
                                 </div>
 
                                 <div class="card-body">
@@ -71,7 +66,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Nome</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="name" placeholder="Nome" type="text"
                                                     v-model="costumer.name" />
                                                 <span class="focus-input100"></span>
@@ -84,7 +79,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Telefone</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="phone" placeholder="Telefone" type="text"
                                                     v-model="costumer.phone" />
                                                 <span class="focus-input100"></span>
@@ -105,7 +100,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Estado civil</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="marital_status" placeholder="Estado Civil" type="text"
                                                     v-model="costumer.marital_status" />
                                                 <span class="focus-input100"></span>
@@ -120,7 +115,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">RG</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'" name="rg"
+                                                <input disabled :class="'input100 form-control'" name="rg"
                                                     placeholder="RG" type="text" v-model="costumer.rg" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -132,7 +127,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">CPF</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="cpf" placeholder="CPF" type="text" v-model="costumer.cpf" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -146,7 +141,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Escolaridade</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="schooling" placeholder="Escolaridade" type="text"
                                                     v-model="costumer.schooling" />
                                                 <span class="focus-input100"></span>
@@ -159,7 +154,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Profissão</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="occupation" placeholder="Profissão" type="text"
                                                     v-model="costumer.occupation" />
                                                 <span class="focus-input100"></span>
@@ -174,7 +169,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Salário</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="salary" placeholder="Salário" type="number"
                                                     v-model="costumer.salary" />
                                                 <span class="focus-input100"></span>
@@ -187,7 +182,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Renda familiar</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control costumerGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="family_income" placeholder="Renda Familiar" type="number"
                                                     v-model="costumer.family_income" />
                                                 <span class="focus-input100"></span>
@@ -204,14 +199,6 @@
                                     <div>
                                         Endereço
                                     </div>
-                                    <div>
-                                        <button id="addressEdit" class="text-primary"
-                                            @click="editAddress">Editar</button>
-                                        <button id="addressSave" class="btn btn-success" style="display: none;"
-                                            @click="saveAddress">Salvar</button>
-                                        <button id="addressCancel" class="btn btn-danger" style="display: none;"
-                                            @click="cancelEditAddress">Cancelar</button>
-                                    </div>
                                 </div>
 
                                 <div class="card-body">
@@ -219,7 +206,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">CEP</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control addressGroup'" name="cep"
+                                                <input disabled :class="'input100 form-control'" name="cep"
                                                     placeholder="CEP" type="text" v-model="address.cep" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -231,7 +218,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Rua</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="street" placeholder="Rua" type="text"
                                                     v-model="address.street" />
                                                 <span class="focus-input100"></span>
@@ -246,7 +233,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Número</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="number" placeholder="Número" type="string"
                                                     v-model="address.number" />
                                                 <span class="focus-input100"></span>
@@ -259,7 +246,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Bairro</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="neighborhood" placeholder="Bairro" type="text"
                                                     v-model="address.neighborhood" />
                                                 <span class="focus-input100"></span>
@@ -274,7 +261,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Cidade</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="city" placeholder="Cidade" type="text"
                                                     v-model="address.city" />
                                                 <span class="focus-input100"></span>
@@ -287,7 +274,7 @@
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label">Estado</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control addressGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="state" placeholder="Estado" type="text"
                                                     v-model="address.state" maxlength="2" />
                                                 <span class="focus-input100"></span>
@@ -319,14 +306,6 @@
                                     <div>
                                         Grupo familiar
                                     </div>
-                                    <div>
-                                        <button id="relativesEdit" class="text-primary"
-                                            @click="editRelatives">Editar</button>
-                                        <button id="relativesSave" class="btn btn-success" style="display: none;"
-                                            @click="saveRelatives">Salvar</button>
-                                        <button id="relativesCancel" class="btn btn-danger" style="display: none;"
-                                            @click="cancelEditRelatives">Cancelar</button>
-                                    </div>
                                 </div>
 
                                 <div class="card-body">
@@ -334,8 +313,8 @@
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Nome</label>
                                             <div class="wrap-input100">
-                                                <input :disabled="viewMode"
-                                                    :class="'input100 form-control relativesGroup'" name="relative_name"
+                                                <input disabled
+                                                    :class="'input100 form-control'" name="relative_name"
                                                     placeholder="Nome" type="text" v-model="relative.name" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -347,8 +326,8 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Parentesco</label>
                                             <div class="wrap-input100">
-                                                <input :disabled="viewMode"
-                                                    :class="'input100 form-control relativesGroup'"
+                                                <input disabled
+                                                    :class="'input100 form-control'"
                                                     name="relative_relationship" placeholder="Parentesco" type="text"
                                                     v-model="relative.relationship" />
                                                 <span class="focus-input100"></span>
@@ -360,8 +339,8 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Idade</label>
                                             <div class="wrap-input100">
-                                                <input :disabled="viewMode"
-                                                    :class="'input100 form-control relativesGroup'" name="relative_age"
+                                                <input disabled
+                                                    :class="'input100 form-control'" name="relative_age"
                                                     placeholder="Idade" type="text" v-model="relative.age" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -372,8 +351,8 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Profissão</label>
                                             <div class="wrap-input100">
-                                                <input :disabled="viewMode"
-                                                    :class="'input100 form-control relativesGroup'" name="occupation"
+                                                <input disabled
+                                                    :class="'input100 form-control'" name="occupation"
                                                     placeholder="Profissão" type="text" v-model="relative.occupation" />
                                                 <span class="focus-input100"></span>
                                                 <span class="symbol-input100">
@@ -384,8 +363,8 @@
                                         <div class="col-12 col-md-2 mb-3">
                                             <label class="form-label">Salário</label>
                                             <div class="wrap-input100">
-                                                <input :disabled="viewMode"
-                                                    :class="'input100 form-control relativesGroup'"
+                                                <input disabled
+                                                    :class="'input100 form-control'"
                                                     name="relative_salary" placeholder="Salário" type="text"
                                                     v-model="relative.salary" />
                                                 <span class="focus-input100"></span>
@@ -393,11 +372,6 @@
                                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
                                                 </span>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div id="relativesAdd" class="row" style="display: none;">
-                                        <div class="col-12 text-center">
-                                            <a class="text-primary" @click="addRelative">Adicionar mais parentes</a>
                                         </div>
                                     </div>
                                 </div>
@@ -408,40 +382,32 @@
                                     <div>
                                         Benefícios de transferência de renda
                                     </div>
-                                    <div>
-                                        <button id="benefitsEdit" class="text-primary"
-                                            @click="editBenefits">Editar</button>
-                                        <button id="benefitsSave" class="btn btn-success" style="display: none;"
-                                            @click="saveBenefits">Salvar</button>
-                                        <button id="benefitsCancel" class="btn btn-danger" style="display: none;"
-                                            @click="cancelEditBenefits">Cancelar</button>
-                                    </div>
                                 </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-2">
                                             <input disabled type="checkbox" id="checkCadastroUnico"
-                                                class="benefitsGroup" v-model="costumer.cadastro_unico" />
+                                                v-model="costumer.cadastro_unico" />
                                             <label for="checkCadastroUnico">Cadastro Único</label>
                                         </div>
                                         <div class="col-12 col-md-2">
-                                            <input disabled type="checkbox" id="checkBolsaFamilia" class="benefitsGroup"
+                                            <input disabled type="checkbox" id="checkBolsaFamilia"
                                                 v-model="costumer.bolsa_familia" />
                                             <label for="checkBolsaFamilia">Bolsa Família</label>
                                         </div>
                                         <div class="col-12 col-md-2">
                                             <input disabled type="checkbox" id="checkPrestacaoContinuada"
-                                                class="benefitsGroup" v-model="costumer.prestacao_continuada" />
+                                                v-model="costumer.prestacao_continuada" />
                                             <label for="checkPrestacaoContinuada">Prestação Continuada</label>
                                         </div>
                                         <div class="col-12 col-md-2">
-                                            <input disabled type="checkbox" id="checkRendaCidada" class="benefitsGroup"
+                                            <input disabled type="checkbox" id="checkRendaCidada"
                                                 v-model="costumer.renda_cidada" />
                                             <label for="checkRendaCidada">Renda Cidadã</label>
                                         </div>
                                         <div class="col-12 col-md-2">
-                                            <input disabled type="checkbox" id="checkCestaBasica" class="benefitsGroup"
+                                            <input disabled type="checkbox" id="checkCestaBasica"
                                                 v-model="costumer.cesta_basica" />
                                             <label for="checkCestaBasica">Cesta Básica</label>
                                         </div>
@@ -454,14 +420,6 @@
                                     <div>
                                         Situação de saúde
                                     </div>
-                                    <div>
-                                        <button id="healthSituationEdit" class="text-primary"
-                                            @click="editHealthSituation">Editar</button>
-                                        <button id="healthSituationSave" class="btn btn-success" style="display: none;"
-                                            @click="saveHealthSituation">Salvar</button>
-                                        <button id="healthSituationCancel" class="btn btn-danger" style="display: none;"
-                                            @click="cancelEditHealthSituation">Cancelar</button>
-                                    </div>
                                 </div>
 
                                 <div class="card-body">
@@ -469,7 +427,7 @@
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Doenças crônicas</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control healthSituationGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="chronic_diseases" placeholder="Doenças Crônicas" type="text"
                                                     v-model="healthSituation.chronic_diseases" />
                                                 <span class="focus-input100"></span>
@@ -482,7 +440,7 @@
                                         <div class="col-12 col-md-4 mb-3">
                                             <label class="form-label">Vícios</label>
                                             <div class="wrap-input100">
-                                                <input disabled :class="'input100 form-control healthSituationGroup'"
+                                                <input disabled :class="'input100 form-control'"
                                                     name="vices" placeholder="Vícios" type="text"
                                                     v-model="healthSituation.vices" />
                                                 <span class="focus-input100"></span>
@@ -500,45 +458,37 @@
                                     <div>
                                         Habitação
                                     </div>
-                                    <div>
-                                        <button id="habitationEdit" class="text-primary"
-                                            @click="editHabitation">Editar</button>
-                                        <button id="habitationSave" class="btn btn-success" style="display: none;"
-                                            @click="saveHabitation">Salvar</button>
-                                        <button id="habitationCancel" class="btn btn-danger" style="display: none;"
-                                            @click="cancelEditHabitation">Cancelar</button>
-                                    </div>
                                 </div>
 
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-12 col-md-2">
                                             <input disabled type="radio" id="radioRented" value="rented"
-                                                class="habitationGroup" v-model="habitation.ownership" />
+                                                v-model="habitation.ownership" />
                                             <label for="radioRented">Alugada</label>
                                         </div>
 
                                         <div class="col-12 col-md-2">
                                             <input disabled type="radio" id="radioOwned" value="owned"
-                                                class="habitationGroup" v-model="habitation.ownership" />
+                                                v-model="habitation.ownership" />
                                             <label for="radioOwned">Própria</label>
                                         </div>
                                         <div class="col-12 col-md-2">
                                             <input disabled type="radio" id="radioGived" value="gived"
-                                                class="habitationGroup" v-model="habitation.ownership" />
+                                                v-model="habitation.ownership" />
                                             <label for="radioGived">Cedida</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12 col md-6">
                                             <label class="form-label" for="habitationCondition">Condição</label>
-                                            <input disabled :class="'input100 form-control habitationGroup'" type="text"
+                                            <input disabled :class="'input100 form-control'" type="text"
                                                 id="habitationCondition" name="habitationCondition"
                                                 placeholder="Condição" v-model="habitation.condition" />
                                         </div>
                                         <div :style="habitation.ownership === 'rented' ? '' : 'display: none;' " class="col-12 col-md-6">
                                             <label class="form-label">Valor do aluguel</label>
-                                            <input disabled :class="'input100 form-control habitationGroup'" name="value"
+                                            <input disabled :class="'input100 form-control'" name="value"
                                                 placeholder="Valor do aluguel" type="number"
                                                 v-model="habitation.value" />
                                         </div>
@@ -551,30 +501,15 @@
                                     <div>
                                         Observações Adicionais
                                     </div>
-                                    <div>
-                                        <button id="observationEdit" class="text-primary"
-                                            @click="editObservation">Editar</button>
-                                        <button id="observationSave" class="btn btn-success" style="display: none;"
-                                            @click="saveObservation">Salvar</button>
-                                        <button id="observationCancel" class="btn btn-danger" style="display: none;"
-                                            @click="cancelEditObservation">Cancelar</button>
-                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <textarea disabled :class="'form-control observationGroup'"
+                                        <textarea disabled :class="'form-control'"
                                             placeholder="Digite as observações aqui..." rows="4"
                                             v-model="observations.observation"></textarea>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- <div class="mt-5 pb-5 d-flex align-items-center justify-content-between mx-10">
-                <button class="btn btn-danger" @click="home">Cancelar</button>
-                <button class="btn btn-primary" @click="createCostumer">
-                    Inserir usuário
-                </button>
-            </div> -->
                         </div>
                     </v-app>
                 </div>
@@ -604,22 +539,17 @@ export default {
             habitation: {},
             observations: {},
             reedeems: [],
-            viewMode: true,
         };
     },
     methods: {
         home() {
             window.location.href = "/";
         },
-
         deleteCostumer() {
-
             let confirmation = confirm("Deseja realmente excluir este usuário?");
-
             if (!confirmation) {
                 return;
             }
-
             axios
                 .delete("/costumers/" + this.costumer.id)
                 .then((response) => {
@@ -628,246 +558,6 @@ export default {
                 .catch((error) => {
                     console.log(error);
                 });
-        },
-        addRelative() {
-            this.relatives.push({
-                name: "",
-                relationship: "",
-                age: "",
-                occupation: "",
-                salary: "",
-                costumer_id: this.costumer.id
-            });
-        },
-        editCostumer() {
-            $("#costumerEdit").hide();
-            $("#costumerSave").show();
-            $("#costumerCancel").show();
-            $('.costumerGroup').removeAttr('disabled');
-        },
-        saveCostumer() {
-            axios
-                .put("/costumers/" + this.costumer.id, {
-                    costumer: this.costumer
-                })
-                .then((response) => {
-                    $("#costumerEdit").show();
-                    $("#costumerSave").hide();
-                    $("#costumerCancel").hide();
-                    $('.costumerGroup').attr('disabled', 'disabled');
-                    this.personsData.costumer = { ...this.costumer };
-                    this.$toast.success("Usuário atualizado com sucesso!");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
-                    this.cancelEditCostumer();
-                });
-        },
-        cancelEditCostumer() {
-            $("#costumerEdit").show();
-            $("#costumerSave").hide();
-            $("#costumerCancel").hide();
-            $('.costumerGroup').attr('disabled', 'disabled');
-            console.log(this.personsData.costumer)
-            this.costumer = { ...this.personsData.costumer };
-        },
-        editAddress() {
-            $("#addressEdit").hide();
-            $("#addressSave").show();
-            $("#addressCancel").show();
-            $('.addressGroup').removeAttr('disabled');
-        },
-        saveAddress() {
-            axios
-                .put("/costumers/" + this.costumer.id, {
-                    address: this.address
-                })
-                .then((response) => {
-                    $("#addressEdit").show();
-                    $("#addressSave").hide();
-                    $("#addressCancel").hide();
-                    $('.addressGroup').attr('disabled', 'disabled');
-                    this.personsData.address = { ...this.address };
-                    this.$toast.success("Endereço atualizado com sucesso!");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
-                    this.cancelEditAddress();
-                });
-        },
-        cancelEditAddress() {
-            $("#addressEdit").show();
-            $("#addressSave").hide();
-            $("#addressCancel").hide();
-            $('.addressGroup').attr('disabled', 'disabled');
-            this.address = { ...this.personsData.address };
-            this.viewMode = true;
-        },
-        editRelatives() {
-            $("#relativesEdit").hide();
-            $("#relativesSave").show();
-            $("#relativesCancel").show();
-            $('#relativesAdd').show();
-            $('.relativesGroup').removeAttr('disabled');
-            this.viewMode = false;
-        },
-        saveRelatives() {
-            axios
-                .put("/costumers/" + this.costumer.id, {
-                    relatives: this.relatives
-                })
-                .then((response) => {
-                    $("#relativesEdit").show();
-                    $("#relativesSave").hide();
-                    $("#relativesCancel").hide();
-                    $('#relativesAdd').hide();
-                    this.viewMode = true;
-                    this.personsData.familyGroup = [...this.relatives];
-                    this.$toast.success("Família atualizada com sucesso!");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
-                    this.cancelEditRelatives();
-                });
-        },
-        cancelEditRelatives() {
-            $("#relativesEdit").show();
-            $("#relativesSave").hide();
-            $("#relativesCancel").hide();
-            $('#relativesAdd').hide();
-            $('.relativesGroup').attr('disabled', 'disabled');
-            this.relatives = [...this.personsData.familyGroup];
-        },
-        editObservation() {
-            $("#observationEdit").hide();
-            $("#observationSave").show();
-            $("#observationCancel").show();
-            $('.observationGroup').removeAttr('disabled');
-        },
-        saveObservation() {
-            axios
-                .put("/costumers/" + this.costumer.id, {
-                    observations: this.observations
-                })
-                .then((response) => {
-                    $("#observationEdit").show();
-                    $("#observationSave").hide();
-                    $("#observationCancel").hide();
-                    $('.observationGroup').attr('disabled', 'disabled');
-                    this.personsData.observations = { ...this.observations };
-                    this.$toast.success("Observações atualizadas com sucesso!");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
-                    this.cancelEditObservations();
-                });
-        },
-        cancelEditObservation() {
-            $("#observationEdit").show();
-            $("#observationSave").hide();
-            $("#observationCancel").hide();
-            $('.observationGroup').attr('disabled', 'disabled');
-            this.observations = { ...this.personsData.observations };
-        },
-        editHealthSituation() {
-            $("#healthSituationEdit").hide();
-            $("#healthSituationSave").show();
-            $("#healthSituationCancel").show();
-            $('.healthSituationGroup').removeAttr('disabled');
-        },
-        saveHealthSituation() {
-            axios
-                .put("/costumers/" + this.costumer.id, {
-                    healthSituation: this.healthSituation
-                })
-                .then((response) => {
-                    $("#healthSituationEdit").show();
-                    $("#healthSituationSave").hide();
-                    $("#healthSituationCancel").hide();
-                    $('.healthSituationGroup').attr('disabled', 'disabled');
-                    this.personsData.healthSituation = { ...this.healthSituation };
-                    this.$toast.success("Situação de saúde atualizada com sucesso!");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
-                    this.cancelEditHealthSituation();
-                });
-        },
-        cancelEditHealthSituation() {
-            $("#healthSituationEdit").show();
-            $("#healthSituationSave").hide();
-            $("#healthSituationCancel").hide();
-            $('.healthSituationGroup').attr('disabled', 'disabled');
-            this.healthSituation = { ...this.personsData.healthSituation };
-        },
-        editBenefits() {
-            $("#benefitsEdit").hide();
-            $("#benefitsSave").show();
-            $("#benefitsCancel").show();
-            $('.benefitsGroup').removeAttr('disabled');
-        },
-        saveBenefits() {
-            axios
-                .put("/costumers/" + this.costumer.id, {
-                    costumer: this.costumer
-                })
-                .then((response) => {
-                    $("#benefitsEdit").show();
-                    $("#benefitsSave").hide();
-                    $("#benefitsCancel").hide();
-                    $('.benefitsGroup').attr('disabled', 'disabled');
-                    this.personsData.costumer = { ...this.costumer };
-                    this.$toast.success("Benefícios atualizados com sucesso!");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
-                    this.cancelEditBenefits();
-                });
-        },
-        cancelEditBenefits() {
-            $("#benefitsEdit").show();
-            $("#benefitsSave").hide();
-            $("#benefitsCancel").hide();
-            $('.benefitsGroup').attr('disabled', 'disabled');
-            this.costumer = { ...this.personsData.costumer };
-        },
-        editHabitation() {
-            $("#habitationEdit").hide();
-            $("#habitationSave").show();
-            $("#habitationCancel").show();
-            $('.habitationGroup').removeAttr('disabled');
-        },
-        saveHabitation() {
-            axios
-                .put("/costumers/" + this.costumer.id, {
-                    habitation: this.habitation
-                })
-                .then((response) => {
-                    $("#habitationEdit").show();
-                    $("#habitationSave").hide();
-                    $("#habitationCancel").hide();
-                    $('.habitationGroup').attr('disabled', 'disabled');
-                    this.personsData.habitation = { ...this.habitation };
-                    this.$toast.success("Habitação atualizada com sucesso!");
-                })
-                .catch((error) => {
-                    console.log(error);
-                    this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
-                    this.cancelEditHabitation();
-                });
-        },
-        cancelEditHabitation() {
-            $("#habitationEdit").show();
-            $("#habitationSave").hide();
-            $("#habitationCancel").hide();
-            $('.habitationGroup').attr('disabled', 'disabled');
-            this.habitation = { ...this.personsData.habitation };
         },
     },
     mounted() {
@@ -880,35 +570,18 @@ export default {
         this.habitation = person.habitation;
         this.observations = person.observations || { observation: "", costumer_id: person.costumer.id };
         this.reedeems = person.reedeems;
-
-
         this.costumer.birth_date = this.costumer.birth_date.split('-').reverse().join('/') || null;
-
-        setTimeout(() => {
-            $('.relativesGroup').attr('disabled', 'disabled');
-        }, 1000);
-        console.log(this.personsData)
     },
-    watch: {
-        address: {
-            handler: function (val, oldVal) {
-                let cep = val.cep.replace(/\D/g, '');
-                if (cep.length == 8) {
-                    axios
-                        .get("https://viacep.com.br/ws/" + cep + "/json/")
-                        .then((response) => {
-                            this.address.street = response.data.logradouro;
-                            this.address.neighborhood = response.data.bairro;
-                            this.address.city = response.data.localidade;
-                            this.address.state = response.data.uf;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                }
-            },
-            deep: true
-        },
-    }
 };
 </script>
+
+
+<style>
+.nav-link {
+    color: #000;
+}
+
+.nav-link.active {
+    color: #0d6efd;
+}
+</style>

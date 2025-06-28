@@ -23,11 +23,10 @@ Vue.component('p-login', require('./login.vue').default);
 Vue.component('p-dashboard-index', require('./pages/dashboard/index.vue').default);
 
 Vue.component('p-users-index', require('./pages/users/index.vue').default);
-Vue.component('p-users-create', require('./pages/users/create.vue').default);
-Vue.component('p-users-edit', require('./pages/users/edit.vue').default);
+Vue.component('p-users-form', require('./pages/users/form.vue').default);
 
+Vue.component('p-costumers-form', require('./pages/costumers/form.vue').default);
 Vue.component('p-costumers-view', require('./pages/costumers/view.vue').default);
-Vue.component('p-costumers-create', require('./pages/costumers/create.vue').default);
 Vue.component('p-costumers-new-record', require('./pages/costumers/new-record.vue').default);
 
 const app = new Vue({

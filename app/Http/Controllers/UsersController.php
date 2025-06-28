@@ -16,14 +16,13 @@ class UsersController extends Controller
 
     public function create()
     {
-        return view('pages.users.create');
+        return view('pages.users.form');
     }
 
     public function edit($id)
     {
-        $userData = User::getUser($id);
-
-        return view('pages.users.edit', compact('userData'));
+        $user = User::findOrFail($id);
+        return view('pages.users.form', compact('user'));
     }
 
     public function insert(Request $request)
@@ -41,19 +40,26 @@ class UsersController extends Controller
             'password_confirmation.required' => 'A confirmação de senha é obrigatória'
         ]);
 
-        $createUser = User::createUser($request->toArray());
+        $data = $request->except('password_confirmation');
+        $data['password'] = Hash::make($data['password']);
 
-        return $createUser;
+        $user = User::create($data);
+
+        return response()->json($user, 201);
     }
 
     public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $id,
         ]);
 
-        if ($request->password) {
+        $data = $request->except(['password', 'password_confirmation']);
+
+        if ($request->filled('password')) {
             $request->validate([
                 'password' => 'required',
                 'password_confirmation' => 'required|same:password',
@@ -62,12 +68,11 @@ class UsersController extends Controller
                 'password_confirmation.same' => 'As senhas não conferem',
                 'password_confirmation.required' => 'A confirmação de senha é obrigatória'
             ]);
-            $request->merge(['password' => Hash::make($request->password)]);
-            unset($request['password_confirmation']);
+            $data['password'] = Hash::make($request->password);
         }
 
-        $updateUser = User::updateUserById($id, $request->toArray());
+        $user->update($data);
 
-        return $updateUser;
+        return response()->json($user);
     }
 }

@@ -33,8 +33,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/print/{id}', [CostumersController::class, 'print']);
         Route::post('/insert-record/{id}', [CostumersController::class, 'insertRecord']);
         Route::get('/create', [CostumersController::class, 'create']);
+        Route::get('/edit/{id}', [CostumersController::class, 'edit']);
         Route::post('/insert', [CostumersController::class, 'insert']);
-        Route::post('/check-cpf', [CostumersController::class, 'checkCpf']);
+        Route::post('/check-cpf/{id?}', [CostumersController::class, 'checkCpf']);
         Route::delete('/{id}', [CostumersController::class, 'delete']);
         Route::put('/{id}', [CostumersController::class, 'update']);
     });

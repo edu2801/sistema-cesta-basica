@@ -29,10 +29,16 @@ class CostumersController extends Controller
         return view('pages.costumers.index', ['costumers' => $query->paginate()]);
     }
 
-    public function checkCpf(Request $request)
+    public function checkCpf(Request $request, $id = null)
     {
         $cpf = preg_replace('/[^0-9]/', '', $request->cpf);
-        $exists = CostumersModel::where('cpf', $cpf)->exists();
+        $query = CostumersModel::where('cpf', $cpf);
+
+        if ($id) {
+            $query->where('id', '!=', $id);
+        }
+
+        $exists = $query->exists();
         return Response::success('CPF check', ['exists' => $exists]);
     }
 
@@ -97,7 +103,28 @@ class CostumersController extends Controller
 
     public function create()
     {
-        return view('pages.costumers.create');
+        return view('pages.costumers.form');
+    }
+
+    public function edit($id)
+    {
+        $costumer = CostumersModel::find($id);
+        $address = AddressModel::where('costumer_id', $id)->first();
+        $familyGroup = FamilyGroupModel::where('costumer_id', $id)->get();
+        $habitation = HabitationModel::where('costumer_id', $id)->first();
+        $healthSituation = HealthSituationModel::where('costumer_id', $id)->first();
+        $observations = ObservationsModel::where('costumer_id', $id)->first();
+
+        $data = [
+            'costumer' => $costumer,
+            'address' => $address,
+            'familyGroup' => $familyGroup,
+            'habitation' => $habitation,
+            'healthSituation' => $healthSituation,
+            'observations' => $observations,
+        ];
+
+        return view('pages.costumers.edit', compact('data'));
     }
 
     public static function insertRecord(Request $request, $id)
@@ -185,13 +212,10 @@ class CostumersController extends Controller
         }
 
         if (!empty($requestData['relatives'])) {
+            FamilyGroupModel::where('costumer_id', $id)->delete();
             foreach ($requestData['relatives'] as $relativeData) {
-                if (isset($relativeData['id'])) {
-                    FamilyGroupModel::updateOrCreate(['id' => $relativeData['id']], $relativeData);
-                } else {
-                    $relativeData['costumer_id'] = $id;
-                    FamilyGroupModel::create($relativeData);
-                }
+                $relativeData['costumer_id'] = $id;
+                FamilyGroupModel::create($relativeData);
             }
         }
 

@@ -2,7 +2,7 @@
     <v-app class="container">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">Dados do básicos</div>
+                <div class="card-header">{{ isEditMode ? 'Editar' : 'Dados do básicos' }}</div>
 
                 <div class="card-body">
                     <div class="row">
@@ -439,9 +439,9 @@
             </div>
 
             <div class="mt-5 pb-5 d-flex align-items-center justify-content-between mx-10">
-                <button class="btn btn-danger" @click="home">Cancelar</button>
-                <button class="btn btn-primary" @click="createCostumer">
-                    Inserir usuário
+                <button class="btn btn-danger" @click="cancel">Cancelar</button>
+                <button class="btn btn-primary" @click="submit">
+                    {{ isEditMode ? 'Salvar' : 'Inserir usuário' }}
                 </button>
             </div>
         </div>
@@ -450,70 +450,40 @@
 
 <script>
 export default {
-    name: "CreateCostumer",
+    name: "CostumerForm",
+    props: {
+        data: {
+            type: Object,
+            default: null,
+        },
+    },
     data() {
         return {
             birthDateInput: null,
             isCpfInvalid: false,
             lastCheckedCpf: '',
-            costumer: {
-                name: "",
-                phone: "",
-                birth_date: null,
-                marital_status: "",
-                rg: "",
-                cpf: "",
-                schooling: "",
-                occupation: "",
-                salary: "",
-                family_income: "",
-                cadastro_unico: false,
-                bolsa_familia: false,
-                prestacao_continuada: false,
-                renda_cidada: false,
-                cesta_basica: false,
-                receives_basket_from_another_source: false,
-            },
-            address: {
-                street: "",
-                neighborhood: "",
-                number: "",
-                city: "",
-                state: "",
-                cep: "",
-                complement: "-",
-                reference: "",
-            },
-            relatives: [
-                {
-                    name: "",
-                    kinship: "",
-                    birth_date: null,
-                    birth_date_input: null,
-                    income_source: "",
-                    income_value: "",
-                    schooling: "",
-                },
-            ],
-            healthSituation: {
-                chronic_diseases: "",
-                vices: "",
-            },
-            habitation: {
-                type: "",
-                financing_details: "",
-                value: null,
-            },
-            observations: {
-                observation: "",
-            },
-
+            costumer: {},
+            address: {},
+            relatives: [],
+            healthSituation: {},
+            habitation: {},
+            observations: {},
             menu2: false,
         };
     },
+    computed: {
+        isEditMode() {
+            return !!this.data;
+        },
+        cep() {
+            return this.address.cep;
+        },
+        costumerAge() {
+            return this.calculateAge(this.costumer.birth_date);
+        }
+    },
     methods: {
-        createCostumer() {
-
+        submit() {
             if (this.isCpfInvalid) {
                 this.$toast.error("CPF Já existenete. Por favor, corrija antes de prosseguir.");
                 return;
@@ -528,11 +498,17 @@ export default {
                 habitation: this.habitation,
                 observations: this.observations,
             };
-            axios
-                .post("/costumers/insert", body)
+
+            const url = this.isEditMode ? `/costumers/${this.data.costumer.id}` : "/costumers/insert";
+            const method = this.isEditMode ? "put" : "post";
+
+            axios[method](url, body)
                 .then((response) => {
                     loader.hide();
-                    window.location.href = "/";
+                    this.$toast.success("Operação realizada com sucesso!");
+                    setTimeout(() => {
+                        window.location.href = this.isEditMode ? `/costumers/view/${this.data.costumer.id}` : "/";
+                    }, 2000)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -540,8 +516,12 @@ export default {
                     this.$toast.error(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0]);
                 });
         },
-        home() {
-            window.location.href = "/";
+        cancel() {
+            if (this.isEditMode) {
+                window.location.href = `/costumers/view/${this.data.costumer.id}`;
+            } else {
+                window.location.href = "/";
+            }
         },
         addRelative() {
             this.relatives.push({
@@ -555,173 +535,143 @@ export default {
             });
         },
         formatCpf() {
-            // As soon as the user starts typing, assume the CPF is valid until proven otherwise.
-            // This removes the red border while they are correcting it.
             this.isCpfInvalid = false;
-
             let cpf = this.costumer.cpf.replace(/\D/g, "");
-
             if (cpf.length > 11) {
                 cpf = cpf.slice(0, 11);
             }
-
-            // Apply formatting
             cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
             cpf = cpf.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
             cpf = cpf.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d{1,2})$/, '$1.$2.$3-$4');
-
             this.costumer.cpf = cpf;
-
             const rawCpf = cpf.replace(/\D/g, "");
-
-            //  *** CORE LOGIC CHANGE ***
-            // Only trigger the check if the CPF has 11 digits AND we haven't checked this exact CPF before.
             if (rawCpf.length === 11 && rawCpf !== this.lastCheckedCpf) {
                 this.checkCpf(rawCpf);
             }
-
-            // If the user deletes characters, reset lastCheckedCpf so it can be checked again if they re-complete it.
             if (rawCpf.length < 11) {
                 this.lastCheckedCpf = '';
             }
         },
         checkCpf(rawCpf) {
-            // Immediately store the CPF we are about to check to prevent multiple API calls.
             this.lastCheckedCpf = rawCpf;
+            let url = "/costumers/check-cpf";
+            let payload = { cpf: this.costumer.cpf };
 
-            axios.post("/costumers/check-cpf", { cpf: this.costumer.cpf })
+            if (this.isEditMode) {
+                url = `/costumers/check-cpf/${this.data.costumer.id}`;
+            }
+
+            axios.post(url, payload)
                 .then(response => {
                     if (response.data.msg.exists) {
-                        // CPF already exists: Show the alert ONCE and set the invalid state to true.
                         this.$toast.error("CPF já cadastrado.");
                         this.isCpfInvalid = true;
                     } else {
-                        // CPF is valid: Ensure the invalid state is false.
                         this.isCpfInvalid = false;
                     }
                 });
         },
-
         onRelativeDateInput(relative) {
-            // --- Part A: MASKING ---
             const input = relative.birth_date_input || '';
             const digitsOnly = input.replace(/\D/g, '').slice(0, 8);
             let formattedValue = digitsOnly;
-
             if (digitsOnly.length > 4) {
                 formattedValue = `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2, 4)}/${digitsOnly.slice(4)}`;
             } else if (digitsOnly.length > 2) {
                 formattedValue = `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2)}`;
             }
-
             if (formattedValue !== input) {
                 relative.birth_date_input = formattedValue;
             }
-
-            // --- Part B: SYNCHRONIZING Input -> Picker ---
             if (digitsOnly.length === 8) {
                 const [d, m, y] = formattedValue.split('/');
                 const newModelDate = `${y}-${m}-${d}`;
-                // Update the picker's model only if it's different
                 if (relative.birth_date !== newModelDate) {
                     relative.birth_date = newModelDate;
                 }
             } else {
-                // If the input is incomplete, clear the picker's model
                 if (relative.birth_date !== null) {
                     relative.birth_date = null;
                 }
             }
         },
-
-        // This new method handles SYNCHRONIZING Picker -> Input.
         onRelativePickerChange(newDate, relative) {
-            // newDate is the YYYY-MM-DD string from the picker's event
             if (!newDate) {
                 relative.birth_date_input = null;
                 return;
             }
             const [y, m, d] = newDate.split('-');
             const formattedInput = `${d}/${m}/${y}`;
-
-            // Update the input field
             if (relative.birth_date_input !== formattedInput) {
                 relative.birth_date_input = formattedInput;
             }
         },
-
         calculateAge(dateString) {
-            // Return nothing if the date is not set
             if (!dateString) return '';
-
-            // Parse the YYYY-MM-DD string into a Date object
             const [year, month, day] = dateString.split('-').map(Number);
             const birthDate = new Date(year, month - 1, day);
-
             const today = new Date();
-
-            // Check for invalid or future dates
             if (isNaN(birthDate.getTime()) || birthDate > today) {
                 return '';
             }
-
             let years = today.getFullYear() - birthDate.getFullYear();
             let months = today.getMonth() - birthDate.getMonth();
-
-            // Adjust years if the birthday hasn't occurred this year yet
             if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
                 years--;
-                // Adjust months to be a positive value (0-11)
                 months = (months + 12) % 12;
             }
-
-            // Build the final display string
             if (years === 0 && months === 0) {
                 return 'Recém-nascido';
             }
-
             const yearText = years > 0 ? `${years} ${years > 1 ? 'anos' : 'ano'}` : '';
             const monthText = months > 0 ? `${months} ${months > 1 ? 'meses' : 'mês'}` : '';
-
-            // Join the parts with ' e ' if both exist
             return [yearText, monthText].filter(Boolean).join(' e ');
         },
         formatPhone() {
-            // Get only the digits from the input
             let phone = this.costumer.phone.replace(/\D/g, '');
-
-            // Limit to 11 digits (DDD + 9 digits)
             if (phone.length > 11) {
                 phone = phone.slice(0, 11);
             }
-
-            // Apply the mask based on the number of digits
             if (phone.length > 10) {
-                // (XX) Y XXXX-XXXX
                 phone = phone.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
             } else if (phone.length > 6) {
-                // (XX) XXXX-XXXX
                 phone = phone.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
             } else if (phone.length > 2) {
-                // (XX) XXXX
                 phone = phone.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
             } else {
-                // (XX
                 phone = phone.replace(/^(\d*)/, '($1');
             }
-
-            // Update the model value, ensuring it's not the same to avoid loops
             if (phone !== this.costumer.phone) {
                 this.costumer.phone = phone;
             }
         },
-    },
-    computed: {
-        cep() {
-            return this.address.cep;
-        },
-        costumerAge() {
-            return this.calculateAge(this.costumer.birth_date);
+        initializeFormData() {
+            if (this.isEditMode) {
+                this.costumer = { ...this.data.costumer };
+                this.address = { ...this.data.address };
+                this.relatives = [...this.data.familyGroup];
+                this.healthSituation = { ...this.data.healthSituation };
+                this.habitation = { ...this.data.habitation };
+                this.observations = { ...this.data.observations };
+            } else {
+                this.costumer = {
+                    name: "", phone: "", birth_date: null, marital_status: "", rg: "", cpf: "",
+                    schooling: "", occupation: "", salary: "", family_income: "",
+                    cadastro_unico: false, bolsa_familia: false, prestacao_continuada: false,
+                    renda_cidada: false, cesta_basica: false, receives_basket_from_another_source: false,
+                };
+                this.address = {
+                    street: "", neighborhood: "", number: "", city: "", state: "",
+                    cep: "", complement: "-", reference: "",
+                };
+                this.relatives = [{
+                    name: "", kinship: "", birth_date: null, birth_date_input: null,
+                    income_source: "", income_value: "", schooling: "",
+                }];
+                this.healthSituation = { chronic_diseases: "", vices: "" };
+                this.habitation = { type: "", financing_details: "", value: null };
+                this.observations = { observation: "" };
+            }
         }
     },
     watch: {
@@ -745,7 +695,6 @@ export default {
             }
         },
         birthDateInput(newValue) {
-            // --- Part A: Masking Logic ---
             const digitsOnly = newValue ? newValue.replace(/\D/g, "").slice(0, 8) : "";
             let formattedValue = digitsOnly;
             if (digitsOnly.length > 4) {
@@ -753,25 +702,17 @@ export default {
             } else if (digitsOnly.length > 2) {
                 formattedValue = `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2)}`;
             }
-
             if (formattedValue !== newValue) {
                 this.birthDateInput = formattedValue;
             }
-
-            // --- Part B: Updating the real model ---
-            // If the date is complete (8 digits), update the picker's model.
             if (digitsOnly.length === 8) {
                 const [day, month, year] = formattedValue.split('/');
                 this.costumer.birth_date = `${year}-${month}-${day}`;
             } else {
-                // If the date is incomplete, make sure the picker's model is cleared.
                 this.costumer.birth_date = null;
             }
         },
-
-        // WATCHER 2: Handles selecting from the date picker
         'costumer.birth_date'(newDate) {
-            // If the picker's date changes, update the text input field.
             if (newDate) {
                 const [year, month, day] = newDate.split('-');
                 this.birthDateInput = `${day}/${month}/${year}`;
@@ -780,5 +721,8 @@ export default {
             }
         }
     },
+    created() {
+        this.initializeFormData();
+    }
 };
 </script>
