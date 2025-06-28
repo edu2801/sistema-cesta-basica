@@ -160,7 +160,7 @@ class CostumersController extends Controller
 
         DB::beginTransaction();
 
-        $requestData['costumer']['cpf'] = preg_replace('/[^0-9]/', '', $requestData['costumer']['cpf']);
+        $requestData['costumer']['cpf'] = $requestData['costumer']['cpf'] ? preg_replace('/[^0-9]/', '', $requestData['costumer']['cpf']) : null;
         $createCostumer = CostumersModel::create($requestData['costumer']);
 
         $requestData['address']['costumer_id'] = $createCostumer['id'];
@@ -203,6 +203,10 @@ class CostumersController extends Controller
         $requestData = $request->all();
 
         DB::beginTransaction();
+
+        if (isset($requestData['costumer']['cpf'])) {
+            $requestData['costumer']['cpf'] = $requestData['costumer']['cpf'] ? preg_replace('/[^0-9]/', '', $requestData['costumer']['cpf']) : null;
+        }
 
         $costumer = CostumersModel::findOrFail($id);
         $costumer->update($requestData['costumer']);

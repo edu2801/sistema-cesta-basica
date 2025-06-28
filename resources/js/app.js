@@ -17,10 +17,12 @@ Vue.use(VueToast);
 Vue.use(Loading);
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('navbar-vue', require('./components/navbar.vue').default);
 
 Vue.component('p-login', require('./login.vue').default);
 
 Vue.component('p-dashboard-index', require('./pages/dashboard/index.vue').default);
+Vue.component('p-dashboard-charts', require('./pages/dashboard/charts.vue').default);
 
 Vue.component('p-users-index', require('./pages/users/index.vue').default);
 Vue.component('p-users-form', require('./pages/users/form.vue').default);

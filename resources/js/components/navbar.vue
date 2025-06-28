@@ -29,8 +29,10 @@
                                 class="nav-link fs-4 text-black"
                                 aria-current="page"
                                 href="/"
-                                >Início</a
-                            >
+                                >Início</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fs-4 text-black" href="/dashboard/charts">Gráficos</a>
                         </li>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="/users">Usuários</a>

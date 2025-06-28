@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddressModel;
 use App\Models\CostumersModel;
 use App\Models\FamilyGroupModel;
 use Illuminate\Http\Request;
@@ -18,15 +19,46 @@ class DashboardController extends Controller
 
     public function charts()
     {
-        $addressData = CostumersModel::join('address', 'costumers.id', '=', 'address.costumer_id')
-            ->select('address.neighborhood', DB::raw('count(*) as total'))
-            ->groupBy('address.neighborhood')
-            ->get();
+        $neighborhoods = AddressModel::select('neighborhood', DB::raw('count(*) as total'))
+            ->groupBy('neighborhood')
+            ->pluck('total', 'neighborhood');
 
-        $ageData = FamilyGroupModel::select(DB::raw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age'), DB::raw('count(*) as total'))
-            ->groupBy(DB::raw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE())'))
-            ->get();
+        $ages = CostumersModel::select(DB::raw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age'))
+            ->get()
+            ->groupBy(function ($item) {
+                if ($item->age < 18) {
+                    return '0-17';
+                } elseif ($item->age >= 18 && $item->age <= 29) {
+                    return '18-29';
+                } elseif ($item->age >= 30 && $item->age <= 49) {
+                    return '30-49';
+                } elseif ($item->age >= 50 && $item->age <= 64) {
+                    return '50-64';
+                } else {
+                    return '65+';
+                }
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
 
-        return view('pages.dashboard.charts', compact('addressData', 'ageData'));
+        $income = CostumersModel::select('family_income')
+            ->get()
+            ->groupBy(function ($item) {
+                if ($item->family_income <= 500) {
+                    return 'Até R$500';
+                } elseif ($item->family_income > 500 && $item->family_income <= 1000) {
+                    return 'R$501 - R$1000';
+                } elseif ($item->family_income > 1000 && $item->family_income <= 2000) {
+                    return 'R$1001 - R$2000';
+                } else {
+                    return 'Acima de R$2000';
+                }
+            })
+            ->map(function ($group) {
+                return $group->count();
+            });
+
+        return view('pages.dashboard.charts', compact('neighborhoods', 'ages', 'income'));
     }
 }
