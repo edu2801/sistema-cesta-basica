@@ -138,11 +138,11 @@ class CostumersController extends Controller
             'responsible_id' => Auth::user()->id,
             'responsible_name' => Auth::user()->name,
             'observation' => $requestData['observation'] ?? null,
-            'delivery_date' => $requestData['delivery_date'] ?? null,
+            'delivery_date' => date("Y-m-d 12:00:00", strtotime($requestData['delivery_date'])) ?? null,
         ]);
 
         $updateCostumer = CostumersModel::where('id', $id)->update([
-            'last_redeem' => date('Y-m-d'),
+            'last_redeem' => $createRedeem->delivery_date ?? date('Y-m-d 12:00:00'),
         ]);
 
         if ($createRedeem && $updateCostumer) {

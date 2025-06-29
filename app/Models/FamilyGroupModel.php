@@ -14,7 +14,7 @@ class FamilyGroupModel extends Model
     protected $fillable = [
         'costumer_id',
         'name',
-        'kinship',
+        'relationship',
         'birth_date',
         'age',
         'income_source',

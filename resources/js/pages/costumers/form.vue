@@ -21,8 +21,8 @@
                         <div class="col-12 col-md-6 mb-3">
                             <label class="form-label">Telefone</label>
                             <div class="wrap-input100">
-                                <input :class="'input100 form-control '" name="phone" placeholder="Telefone"
-                                    type="text" v-model="costumer.phone" @input="formatPhone" />
+                                <input :class="'input100 form-control '" name="phone" placeholder="Telefone" type="text"
+                                    v-model="costumer.phone" @input="formatPhone" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
                                     <i aria-hidden="true" class="mdi mdi-phone"></i>
@@ -87,9 +87,8 @@
                             <label class="form-label">CPF</label>
                             <div class="wrap-input100">
                                 <input :class="{ 'input100 form-control': true, 'is-invalid': isCpfInvalid }" name="cpf"
-                                    placeholder="CPF" type="text" v-model="costumer.cpf" @input="formatCpf" 
-                                    maxlength="14"
-                                    />
+                                    placeholder="CPF" type="text" v-model="costumer.cpf" @input="formatCpf"
+                                    maxlength="14" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
                                     <i aria-hidden="true" class="zmdi zmdi-email"></i>
@@ -270,8 +269,8 @@
                         <div class="col-12 col-md-2 mb-3">
                             <label class="form-label">Parentesco</label>
                             <div class="wrap-input100">
-                                <input :class="'input100 form-control '" name="relative_kinship"
-                                    placeholder="Parentesco" type="text" v-model="relative.kinship" />
+                                <input :class="'input100 form-control '" name="relative_relationship"
+                                    placeholder="Parentesco" type="text" v-model="relative.relationship" />
                             </div>
                         </div>
                         <div class="col-12 col-md-2 mb-3">
@@ -526,7 +525,7 @@ export default {
         addRelative() {
             this.relatives.push({
                 name: "",
-                kinship: "",
+                relationship: "",
                 birth_date: null,
                 birth_date_input: null,
                 income_source: "",
@@ -653,6 +652,18 @@ export default {
                 this.healthSituation = { ...this.data.healthSituation };
                 this.habitation = { ...this.data.habitation };
                 this.observations = { ...this.data.observations };
+
+                if (this.costumer.birth_date) {
+                    const [year, month, day] = this.costumer.birth_date.split('-');
+                    this.birthDateInput = `${day}/${month}/${year}`;
+                }
+
+                this.relatives.forEach(relative => {
+                    if (relative.birth_date) {
+                        const [year, month, day] = relative.birth_date.split('-');
+                        relative.birth_date_input = `${day}/${month}/${year}`;
+                    }
+                });
             } else {
                 this.costumer = {
                     name: "", phone: "", birth_date: null, marital_status: "", rg: "", cpf: "",
@@ -665,7 +676,7 @@ export default {
                     cep: "", complement: "-", reference: "",
                 };
                 this.relatives = [{
-                    name: "", kinship: "", birth_date: null, birth_date_input: null,
+                    name: "", relationship: "", birth_date: null, birth_date_input: null,
                     income_source: "", income_value: "", schooling: "",
                 }];
                 this.healthSituation = { chronic_diseases: "", vices: "" };
