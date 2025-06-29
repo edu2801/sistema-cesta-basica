@@ -23,23 +23,20 @@ class DashboardController extends Controller
             ->groupBy('neighborhood')
             ->pluck('total', 'neighborhood');
 
-        $ages = CostumersModel::select(DB::raw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age'))
+        $ages = CostumersModel::select(DB::raw('EXTRACT(YEAR FROM AGE(CURRENT_DATE, birth_date)) AS age'))
             ->get()
             ->groupBy(function ($item) {
                 if ($item->age < 18) {
                     return '0-17';
                 } elseif ($item->age >= 18 && $item->age <= 29) {
                     return '18-29';
-                } elseif ($item->age >= 30 && $item->age <= 49) {
-                    return '30-49';
-                } elseif ($item->age >= 50 && $item->age <= 64) {
-                    return '50-64';
+                } elseif ($item->age >= 30 && $item->age <= 39) {
+                    return '30-39';
+                } elseif ($item->age >= 40 && $item->age <= 49) {
+                    return '40-49';
                 } else {
-                    return '65+';
+                    return '50+';
                 }
-            })
-            ->map(function ($group) {
-                return $group->count();
             });
 
         $income = CostumersModel::select('family_income')
